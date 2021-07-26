@@ -6,6 +6,27 @@ This article describes the simple implementation of an asynchronous distributed 
 
 
 # Usage
-  npm run neighbour_publishing
-  (in another terminal:)
-  npm start
+First terminal :
+```
+$ npm run neighbour_publishing
+> Decentralized Swarm of Asynchronous Distributed Cellular Automata@0.0.1 neighbour_publishing
+> node neighbour_publishing_version
+
+Initializing bootstrap node ... OK !
+{
+  PeerID: '12D3KooWPpUW9UNfZZHP7PZZN2iCaZ7X3y5arYyuV2vBWDnmo3ME',
+  IPv4: '192.168.0.3'
+}
+Initializing ipfs client node 2 x:0 y:1 ... OK !
+Initializing ipfs client node 3 x:1 y:1 ... OK !
+Initializing ipfs client node 0 x:0 y:0 ... OK !
+Initializing ipfs client node 1 x:1 y:0 ... OK !
+```
+
+Second terminal :
+```
+$ npm start
+> Decentralized Swarm of Asynchronous Distributed Cellular Automata@0.0.1 start
+> IPFS_PATH=./.ipfs ./ipfs pubsub pub cell-0-0 2
+```
+
