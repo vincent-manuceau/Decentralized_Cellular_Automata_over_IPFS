@@ -1,5 +1,5 @@
 {
-	"name": "Decentralized Swarm of Asynchronous Distributed Cellular Automata",
+	"name": "Decentralized_Cellular_Automata_over_IPFS",
 	"version": "0.0.1",
 	"description": "Decentralized Swarm of Asynchronous Distributed Cellular Automata",
 	"main": "neighbour_publishing_version.js",
