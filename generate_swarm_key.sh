@@ -6,7 +6,7 @@ if [ $(uname) = 'Linux' ]; then
  sed -e "s/\"Router\": \"\"/\"Router\": \"$1\"/g" -i .ipfs/config
 elif [ $(uname) = 'Darwin' ]; then
  ./generate_swarm_key_mac > ./.ipfs/swarm.key
- sed -e "s/\"Router\": \"\"/\"Router\": \"$1\"/g" .ipfs/config > .ipfs/config
+ sed -e "s/\"Router\": \"\"/\"Router\": \"$1\"/g" .ipfs/config | cat > .ipfs/config
 else
  echo "ERROR : Unsupported OS"
 fi
