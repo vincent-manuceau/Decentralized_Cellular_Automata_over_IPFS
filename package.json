@@ -1,0 +1,27 @@
+{
+	"name": "Decentralized Swarm of Asynchronous Distributed Cellular Automata",
+	"version": "0.0.1",
+	"description": "Decentralized Swarm of Asynchronous Distributed Cellular Automata",
+	"main": "neighbour_publishing_version.js",
+	"keywords": [
+		"ipfs",
+		"cellular automata",
+		"decentralized",
+		"swarm",
+		"asynchronous cellular automata",
+		"game of life"
+	],
+	"author": "Vincent Manuceau",
+	"licence": "MIT",
+	"scripts": {
+		"start": "IPFS_PATH=./.ipfs ./ipfs pubsub pub cell-0-0 2",
+		"neighbour_publishing": "node neighbour_publishing_version",
+		"stats": "IPFS_PATH=./.ipfs ./ipfs pubsub pub cell-0-0 3"
+	},
+	"dependencies": {
+		"child_process": "^1.0.2",
+		"http": "^0.0.1-security",
+		"os": "^0.1.2",
+		"ws": "^7.5.3"
+	}
+}
