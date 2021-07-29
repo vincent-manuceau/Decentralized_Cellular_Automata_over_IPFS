@@ -14,7 +14,7 @@
 	"author": "Vincent Manuceau",
 	"licence": "MIT",
 	"scripts": {
-		"start": "IPFS_PATH=./.ipfs0 ./ipfs pubsub pub cell-0-0 '[0,2]'",
+		"start": "IPFS_PATH=./.ipfs0 ./ipfs pubsub pub cell-0-0 '[0,0,0,2]'",
 		"np": "node neighbour_publishing_version"
 	},
 	"dependencies": {
