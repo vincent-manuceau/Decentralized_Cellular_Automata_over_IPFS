@@ -15,7 +15,7 @@
 	"licence": "MIT",
 	"scripts": {
 		"start": "IPFS_PATH=./.ipfs0 ./ipfs pubsub pub cell-0-0 '[0,2]'",
-		"np": "node neighbour_publishing_version",
+		"np": "node neighbour_publishing_version"
 	},
 	"dependencies": {
 		"child_process": "^1.0.2",
