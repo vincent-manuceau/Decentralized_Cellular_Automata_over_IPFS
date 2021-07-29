@@ -248,7 +248,7 @@ function process_cp(cell, publish_callback){
 
 				pubsub.get_stats(cell.coord,cell_length,(stats)=>{
 					var msg = {step:cell.step,coord:cell.coord,state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
-					console.dir(msg)
+			//		console.dir(msg)
 					if (cell.step % 100 == 0)
 					pubsub.clients.forEach(function each(client) {
 					    client.send(JSON.stringify(msg));
@@ -256,10 +256,10 @@ function process_cp(cell, publish_callback){
 				})
 				
 				if(cell.coord.x == 0 && cell.coord.y == 0){
-					display_cells()
+			//		display_cells()
 					pubsub.get_stats({router:true},cell_length,(stats)=>{
 					var msg = {step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out}
-					console.dir(msg)
+			//		console.dir(msg)
 					if (cell.step % 100 == 0)
 					pubsub.clients.forEach(function each(client) {
 					    client.send(JSON.stringify(msg));
