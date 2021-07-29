@@ -135,7 +135,7 @@ function process_np(cell, publish_callback){
 			console.log("CA start request received...")
 			display_cells()
 			pubsub.get_stats({router:true},cell_length,(stats)=>{
-				console.dir({step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out})
+			//	console.dir({step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out})
 				return publish_callback(cell)
 			})			
 		}
@@ -166,7 +166,7 @@ function process_np(cell, publish_callback){
 
 				pubsub.get_stats(cell.coord,cell_length,(stats)=>{
 					var msg = {step:cell.step,coord:cell.coord,state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
-					console.dir(msg)
+				//	console.dir(msg)
 					//if (cell.step % 100 == 0)
 					pubsub.clients.forEach(function each(client) {
 					    client.send(JSON.stringify(msg));
@@ -177,7 +177,7 @@ function process_np(cell, publish_callback){
 					display_cells()
 					pubsub.get_stats({router:true},cell_length,(stats)=>{
 					var msg = {step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out}
-					console.dir(msg)
+				//	console.dir(msg)
 					//if (cell.step % 100 == 0)
 					pubsub.clients.forEach(function each(client) {
 						    client.send(JSON.stringify(msg));
