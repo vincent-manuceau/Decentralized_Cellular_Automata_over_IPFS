@@ -1,7 +1,7 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
 const cell_length = 5
-const max_step = 30
+const max_step = 1000
 
 var cells = Array();
 
@@ -133,7 +133,7 @@ function process_np(cell, publish_callback){
 		//console.dir("Process cell "+cell.coord.x+" "+cell.coord.y+" msg: "+msg)
 		if(is_start){ //Start CA request
 			console.log("CA start request received...")
-			display_cells()
+		//	display_cells()
 			pubsub.get_stats({router:true},cell_length,(stats)=>{
 			//	console.dir({step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out})
 				return publish_callback(cell)
@@ -174,7 +174,7 @@ function process_np(cell, publish_callback){
 				})
 				
 				if(cell.coord.x == 0 && cell.coord.y == 0){
-					display_cells()
+				//	display_cells()
 					pubsub.get_stats({router:true},cell_length,(stats)=>{
 					var msg = {step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out}
 				//	console.dir(msg)
