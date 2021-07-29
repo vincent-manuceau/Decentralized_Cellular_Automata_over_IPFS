@@ -199,17 +199,17 @@ function connect(){
         if (isset(j.router) && isset(j.length)){
             
             len = parseInt(j.length)
-    //        generate_tab(len)
+            generate_tab(len)
             generate_graph(len,j.router)
         }
         else if (((isset(j.coord)  && isset(j.state)) || isset(j.router)) && isset(j.step))
         {
 
+            if (j.step % 10 == 0)
+                update_chart(j,isset(j.router))
 
-            update_chart(j,isset(j.router))
-
-            //if (isset(j.coord))
-        //        update_cell(j)
+            if (isset(j.coord))
+                update_cell(j)
         }
 
 

@@ -19,8 +19,8 @@ class Cell {
 }
 
 function state_from_coord(i,j){
-	return  Math.floor(Math.random() * (10 - 1) + 1)%2
-	//return (i == 1 && j >= 0 && j < cell_length)?1:0
+	//return  Math.floor(Math.random() * (10 - 1) + 1)%2
+	return (i == 2 && j > 0 && j < cell_length-1)?1:0
 }
 
 function build_cells(){
