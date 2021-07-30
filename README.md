@@ -6,7 +6,7 @@ This article describes the simple implementation of an asynchronous distributed 
 
 
 # Usage Neighbour Publishing Version
-- Launch in your browser : [http://localhost:8079](http://localhost:8079)
+- Open in your web browser : stats.html file
 
 - First terminal :
 ```
@@ -55,7 +55,7 @@ $ npm start
 ```
 
 # Usage Neighbour Subscribing Version
-- Launch in your browser : [http://localhost:8079](http://localhost:8079)
+- Open in your web browser : stats.html file
 
 - First terminal :
 ```
