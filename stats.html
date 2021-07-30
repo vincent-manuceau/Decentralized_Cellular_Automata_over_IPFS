@@ -4,16 +4,21 @@
     <meta charset="utf8">
 </head>
 <body>
-<div style="height:100%">
-    <canvas id="myChart" width="400px" height="400px"></canvas>
+<div style="height:300px">
+    <canvas id="myChart"></canvas>
+</div>
+<div style="height:300px">
+    <canvas id="myChartAvg"></canvas>
 </div>
 <div id="celltab"></div>
 
 <script src="./chart.min.js"></script>
 <!-- src="https://cdn.jsdelivr.net/npm/chart.js@3.4.1/dist/chart.min.js" -->
 <script>
+var stats_interval = 10 ;
 var ctx = document.getElementById('myChart').getContext('2d');
-
+var ctxAvg = document.getElementById('myChartAvg').getContext('2d');
+/*
 var labels = [
     "a","b","c","d","e","f","g"
 ];
@@ -37,12 +42,17 @@ var config = {
   options:{
     maintainAspectRatio: false,
   }
-};
+};*/
 //var myChart = new Chart(ctx, config)
 var dataChart = {};
 var config = {};
 var len = 0;
 var myChart = {};
+
+
+var dataChartAvg = {};
+var configAvg = {};
+var myChartAvg = {};
 
 function cell_name(i,j){
     return "cell-"+i+"-"+j
@@ -144,6 +154,39 @@ function generate_graph(len,router){
         };
        // ctx.height=500;
         myChart = new Chart(ctx, config)
+
+        //Generate avg graph
+        dataChartAvg = {
+          labels: [],
+          datasets: [{
+                    label: "Average bandwidth per node",
+                    data: [],
+                    fill: false,
+                    borderColor: getRandomColor(),
+                    tension: 0.1
+                }]
+        };
+
+        configAvg = {
+          type: 'line',
+          data: dataChartAvg,
+          options:{
+            responsive: true,
+           //height:'500px',
+            //maintainAspectRatio: false,
+            responsive: true,
+            maintainAspectRatio: false,
+             scales: {
+                yAxes: [{
+                    ticks: {
+                      //  beginAtZero: true
+                    }
+                }]
+            }
+          }
+        }
+
+        myChartAvg = new Chart(ctxAvg, configAvg)
 }
 
 
@@ -156,8 +199,6 @@ function update_chart(j, isRouter){
         var c = j.coord  
         cID = c.x+len*c.y
     }
-
-
     
     var step = j.step 
     var nin = j.in 
@@ -165,12 +206,24 @@ function update_chart(j, isRouter){
 
 
 
-    if (myChart.data.labels.length <= step/100 &&
+    if (myChart.data.labels.length <= step/stats_interval &&
         myChart.data.labels[myChart.data.labels.length - 1] != step
-        ){
-        myChart.data.labels.push(step)
-    }
+        ){            
+            myChart.data.labels.push(step)
+            myChartAvg.data.labels.push(step)
 
+            var totalNodes = 0
+            var curBandwidth = 0
+            for(var i in myChart.data.datasets){
+                if (isset(myChart.data.datasets[i].data[myChart.data.datasets[i].data.length - 1])){
+                    totalNodes++ 
+                    curBandwidth += myChart.data.datasets[i].data[myChart.data.datasets[i].data.length - 1]
+                }
+                
+            }
+            myChartAvg.data.datasets[0].data.push(curBandwidth/(totalNodes*step))
+            myChartAvg.update()
+    }
     myChart.data.datasets[cID].data.push(nin+nout);//this update the value of may
     myChart.update();
 }
@@ -181,7 +234,7 @@ function isset(a){
 }
 
 function connect(){
-    var ws = new WebSocket("ws://192.168.0.104:8079");
+    var ws = new WebSocket("ws://localhost:8079");
                 
     ws.onopen = function() {
       
@@ -196,20 +249,21 @@ function connect(){
        // console.dir(JSON.parse(received_msg));
         var j = JSON.parse(received_msg);
 
-        if (isset(j.router) && isset(j.length)){
+        if (isset(j.router) && isset(j.length) && isset(j.stats_interval)){
             
             len = parseInt(j.length)
-            generate_tab(len)
+            stats_interval = j.stats_interval
+           // generate_tab(len)
             generate_graph(len,j.router)
         }
         else if (((isset(j.coord)  && isset(j.state)) || isset(j.router)) && isset(j.step))
         {
 
-            if (j.step % 10 == 0)
+          //  if (j.step % stats_interval == 0)
                 update_chart(j,isset(j.router))
 
-            if (isset(j.coord))
-                update_cell(j)
+           // if (isset(j.coord))
+           //     update_cell(j)
         }
 
 

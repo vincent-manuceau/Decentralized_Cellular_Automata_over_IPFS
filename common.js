@@ -1,9 +1,9 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
-const cell_length = 5
+const cell_length = 3
 const max_step = 1000
 
-var cells = Array();
+var cells = Array()
 
 
 function cell_name(coord) {
@@ -167,7 +167,7 @@ function process_np(cell, publish_callback){
 				pubsub.get_stats(cell.coord,cell_length,(stats)=>{
 					var msg = {step:cell.step,coord:cell.coord,state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
 				//	console.dir(msg)
-					//if (cell.step % 100 == 0)
+					if (cell.step % pubsub.stats_interval == 0)
 					pubsub.clients.forEach(function each(client) {
 					    client.send(JSON.stringify(msg));
 					});
@@ -178,7 +178,7 @@ function process_np(cell, publish_callback){
 					pubsub.get_stats({router:true},cell_length,(stats)=>{
 					var msg = {step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out}
 				//	console.dir(msg)
-					//if (cell.step % 100 == 0)
+					if (cell.step % pubsub.stats_interval == 0)
 					pubsub.clients.forEach(function each(client) {
 						    client.send(JSON.stringify(msg));
 						});

@@ -2,7 +2,7 @@ const {exec,spawn} = require('child_process')
 
 /* IPFS PubSub */
 
-pubsub = {PeerID : "", IPv4 : ""}
+pubsub = {PeerID : "", IPv4 : "", stats_interval : 10}
 
 pubsub.pubsub_router = "floodsub" // "floodsub" or "gossipsub"
 
@@ -315,7 +315,11 @@ function launch_ipfs_bootstrap_node(pubsub_router, cell_length, callback){
 							  /*ws.on('message', message => {
 							   // console.log(`Received message => ${message}`)
 							  })*/
-							  ws.send(JSON.stringify({connection:true, length:cell_length, router: pubsub.pubsub_router}))
+							  ws.send(JSON.stringify({connection:true, 
+							  							length:cell_length, 
+							  							router: pubsub.pubsub_router, 
+							  							stats_interval : pubsub.stats_interval
+							  						}))
 							})
 
 
