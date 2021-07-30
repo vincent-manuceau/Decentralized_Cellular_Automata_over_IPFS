@@ -1,6 +1,6 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
-const cell_length = 3
+const cell_length = 5
 const max_step = 1000
 
 var cells = Array()
@@ -30,7 +30,9 @@ function neighb_list(coord, len){
 
 /* Cells PubSub */
 function cell_publish(cell){
-	pubsub.pub(cell.coord,cell.state,cell_length)
+	pubsub.pub( cell.coord,
+				JSON.stringify([cell.step,cell.coord.x,cell.coord.y,cell.state]),
+				cell_length)
 }
 
 function neighb_publish(cell){
@@ -46,7 +48,7 @@ function neighb_publish(cell){
 
 function cell_subscribe(cell, publish){
 	//console.dir(cell)
-	var sub = pubsub.sub(cell, process_np, cell_length, publish)
+	var sub = pubsub.sub(cell, cell.coord, process_np, cell_length, publish)
 	return sub
 }
 
@@ -54,7 +56,7 @@ function neighb_subscribe(cell,length, publish){
 	var neighb = neighb_list(cell.coord, length)
 	var sub = Array(8)
 	for(var i in neighb)
-		sub[i] = pubsub.sub(neighb[i], process_cp, cell_length, publish)
+		sub[i] = pubsub.sub( cell, neighb[i], process_cp, cell_length, publish)
 		//cell_subscribe(neighb[i],publish)
 	return sub
 }
@@ -63,6 +65,7 @@ function isset(x){
 	return typeof(x) !== 'undefined'
 }
 
+// Processing msg in Neighbour Publishing Version
 function process_np(cell, publish_callback){
 	//console.dir(cell)
 
@@ -216,56 +219,149 @@ function process_np(cell, publish_callback){
 
 
 
+// Processing msg in Neighbour Subscribing Version
 function process_cp(cell, publish_callback){
+	//console.dir(cell)
 
 	return function message_processor(msg){	
 		if (cell.stopped){	
 			return true
 			
 		}
-//		console.log(cell.coord.x + " " + cell.coord.y+" -> "+msg)
+		//console.dir(msg.toString());
+		const regex = /\[([0-9]+),([0-9]+),([0-9]+),([0-9]+)\]/gm;
+					  ///\[([0-9]+),([0-9]+)\]/gm;
+//		const str = `'[0,2,2,0][0,2,1,1][0,2,0,1][0,0,1,1][0,0,2,0][0,1,1,0][0,1,2,0]'`;
+		let m;
+		var is_start = false;
+		while ((m = regex.exec(msg)) !== null) {
+		    // This is necessary to avoid infinite loops with zero-width matches
+		    if (m.index === regex.lastIndex) {
+		        regex.lastIndex++;
+		    }
+		    
+		 
+		    var curCell = {
+		    	step : parseInt(m[1]),
+		    	x : parseInt(m[2]),
+		    	y : parseInt(m[3]),
+		    	state : parseInt(m[4])
+		    }
 
-		msg = parseInt(String.fromCharCode(msg[msg.length-1]))
+		    if (!isset(cell.msg))
+		    {
+		    	cell.msg = {}
+		    }
+
+		    if (curCell.state == 2){
+			    is_start = true
+		    }
+		    else{
+		   // 	console.dir(curCell)
+		    	if (curCell.step >= cell.step){
+		    		if (!isset(cell.msg[curCell.step])){
+		    			cell.msg[curCell.step] = {}
+		    		}
+
+		    		if (!isset(cell.msg[curCell.step][curCell.x])){
+		    			cell.msg[curCell.step][curCell.x] = {}
+		    		}
+
+		    		if (!isset(cell.msg[curCell.step][curCell.x][curCell.y])){
+		    			cell.msg[curCell.step][curCell.x][curCell.y] = curCell.state
+		    		}
+		    	}
+		    }
+
+
+		    /*if (curCell.step >= cell.step){
+
+			    if (curCell.state != 2 && !isset(cell.msg[curCell.step])){
+			    	var already_present = false;
+			    	for(var i in cell.msg[curCell.step]){
+			    		if (cell.msg[curCell.step][i].x == curCell.x &&
+			    			cell.msg[curCell.step][i].y == curCell.y ){
+			    			already_present = true;
+			    			break;
+			    		}
+			    	}
+
+
+			    	if (!already_present)
+					    cell.msg[curCell.step].push(curCell)
+			    }
+				else
+					is_start = true;
+			    //console.dir(m)
+//			    console.dir(curCell)
+		    } */
+		}
+
+//		console.log(cell.coord.x + " " + cell.coord.y+" -> "+msg)
+//		console.log("Cell "+cell.coord.x+"-"+cell.coord.y+" received :");
+//		console.dir(msg.toString())
+		//msg = parseInt(String.fromCharCode(msg[msg.length-1]))
 //		console.dir(msg)
 		//console.dir("Process cell "+cell.coord.x+" "+cell.coord.y+" msg: "+msg)
-		if(parseInt(msg) == 2){ //Start CA request
+		if(is_start){ //Start CA request
 			console.log("CA start request received...")
-			display_cells()
+		//	display_cells()
 			pubsub.get_stats({router:true},cell_length,(stats)=>{
-				console.dir({step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out})
+			//	console.dir({step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out})
 				return publish_callback(cell)
 			})			
 		}
 		else{
-			cell.alive_neighb += parseInt(msg)
-			cell.current_neighb++
+			//console.dir(cell.msg)
+			cell.alive_neighb = 0//parseInt(msg)
+			cell.current_neighb = 0
+			if (!isset(cell.msg[cell.step]))
+				cell.msg[cell.step] = {}
+			for(var i in cell.msg[cell.step])
+				for(var j in cell.msg[cell.step][i])
+				{
+					cell.alive_neighb += cell.msg[cell.step][i][j]
+					cell.current_neighb++
+				}
+			//cell.current_neighb = cell.msg[cell.step].length;
+
+			if (cell.current_neighb > 8){
+				delete cell.subscribe
+				console.dir(cell)
+				throw new Error(JSON.stringify(cell))
+			}
+
 			if(cell.current_neighb == 8){
+			//	console.log("8 neighbours !");
 				cell.state = ((cell.alive_neighb == 2 && cell.state == 1) 
 							 || cell.alive_neighb == 3)?1:0
 				cell.alive_neighb = cell.current_neighb = 0
+				delete cell.msg[cell.step]
 				cell.step++ ;
-
+			//	console.dir(cell.msg)
 
 				pubsub.get_stats(cell.coord,cell_length,(stats)=>{
 					var msg = {step:cell.step,coord:cell.coord,state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
-			//		console.dir(msg)
-					if (cell.step % 100 == 0)
+				//	console.dir(msg)
+					if (cell.step % pubsub.stats_interval == 0)
 					pubsub.clients.forEach(function each(client) {
 					    client.send(JSON.stringify(msg));
 					});
 				})
 				
 				if(cell.coord.x == 0 && cell.coord.y == 0){
-			//		display_cells()
+				//	display_cells()
 					pubsub.get_stats({router:true},cell_length,(stats)=>{
 					var msg = {step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out}
-			//		console.dir(msg)
-					if (cell.step % 100 == 0)
+				//	console.dir(msg)
+					if (cell.step % pubsub.stats_interval == 0)
 					pubsub.clients.forEach(function each(client) {
-					    client.send(JSON.stringify(msg));
-					});
-				})
+						    client.send(JSON.stringify(msg));
+						});
+					})
 				}
+
+
 				if (cell.step == max_step){
 					cell.stopped = true
 					pubsub.stop(cell,()=>{

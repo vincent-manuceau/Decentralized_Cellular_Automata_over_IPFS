@@ -253,7 +253,7 @@ function connect(){
             
             len = parseInt(j.length)
             stats_interval = j.stats_interval
-           // generate_tab(len)
+         //   generate_tab(len)
             generate_graph(len,j.router)
         }
         else if (((isset(j.coord)  && isset(j.state)) || isset(j.router)) && isset(j.step))
@@ -262,7 +262,7 @@ function connect(){
           //  if (j.step % stats_interval == 0)
                 update_chart(j,isset(j.router))
 
-           // if (isset(j.coord))
+          //  if (isset(j.coord))
            //     update_cell(j)
         }
 

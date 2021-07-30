@@ -1,5 +1,7 @@
 const {exec,spawn} = require('child_process')
 
+
+
 /* IPFS PubSub */
 
 pubsub = {PeerID : "", IPv4 : "", stats_interval : 10}
@@ -60,11 +62,11 @@ pubsub.pub = function(cell_coord,msg,cell_length){
 
 }
 
-pubsub.sub = function(cell, process, cell_length, callback){
+pubsub.sub = function(cell, target_coord, process, cell_length, callback){
 	//console.dir(cell)
 	//console.log("Cell subscribing for "+'cell-'+cell.coord.x+'-'+cell.coord.y)
 	//console.log("subscribed to "+cell_name(cell.coord))
-	var sub = spawn('./ipfs',['pubsub','sub','cell-'+cell.coord.x+'-'+cell.coord.y], 
+	var sub = spawn('./ipfs',['pubsub','sub','cell-'+target_coord.x+'-'+target_coord.y], 
 		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(cell.coord,cell_length) , LIBP2P_FORCE_PNET:1 }});
 	sub.stdout.on('data',process(cell,callback))
 	return sub
@@ -159,7 +161,7 @@ function launch_ipfs_client_node(ipfs_id, PeerID, IPv4,pubsub_router,callback){
 					
 					var add_bootstrap = spawn('./ipfs', ['bootstrap','add','/ip4/'+IPv4+'/tcp/4001/ipfs/'+PeerID], {
 			 			env: {IPFS_PATH: IPFS_PATH, LIBP2P_FORCE_PNET:1}})
-					add_bootstrap.stderr.on('data', function (msg) { throw new Error(msg) })
+				//	add_bootstrap.stderr.on('data', function (msg) { throw new Error(msg) })
 					add_bootstrap.stdout.on('end', function () {	
 
 					//	console.dir(data)
@@ -176,11 +178,12 @@ function launch_ipfs_client_node(ipfs_id, PeerID, IPv4,pubsub_router,callback){
 						  	return callback(ipfs_id);
 						  }
 						})
-						ipfs.stderr.on('data', function (msg) { throw new Error(msg) })
+						//ipfs.stderr.on('data', function (msg) { throw new Error(msg) })
 
 						ipfs.stdout.on('end', function () {
 							console.log("Ipfs client node "+ipfs_id+" stopped")	
 							console.dir(data)
+							launch_ipfs_client_node(ipfs_id, PeerID, IPv4,pubsub_router,callback)
 						})
 					})
 				})
@@ -212,7 +215,12 @@ function get_local_network_ipv4(){
 function ipfs_id_from_cell_coord(coord,cell_length){
 	if (typeof(coord.router) !== 'undefined')
 		return ""
-	return (coord.x + cell_length*coord.y);
+	else{
+	//	console.dir(coord)
+	//	console.log("id => " + (coord.x + cell_length*coord.y))
+		return (coord.x + cell_length*coord.y);
+	}
+	
 }
 
 function api_port_from_ipfs_id(coord,cell_length){
@@ -250,7 +258,7 @@ function launch_ipfs_bootstrap_node(pubsub_router, cell_length, callback){
 				rm_bootstrap.stdout.on('data', function (chunk) {
 				  dataRM += chunk
 				})
-				rm_bootstrap.stderr.on('data', function (msg) { throw new Error(msg) })
+			//	rm_bootstrap.stderr.on('data', function (msg) { throw new Error(msg) })
 
 				rm_bootstrap.stdout.on('end', function () {	
 					//console.dir(dataRM)
@@ -377,7 +385,9 @@ launch_ipfs_bootstrap_node((bootstrap)=>{
 });
 */
 
-
+function isset(a){
+	return typeof(a) !== 'undefined'
+}
 
 
 
