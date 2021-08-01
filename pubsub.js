@@ -9,7 +9,22 @@ pubsub = {PeerID : "", IPv4 : "", stats_interval : 10}
 pubsub.pubsub_router = "floodsub" // "floodsub" or "gossipsub"
 
 pubsub.pub = function(cell_coord,msg,cell_length){
-	var topic = 'cell-'+cell_coord.x+'-'+cell_coord.y
+	console.log("pubsub pub ");
+	console.dir({cell_coord:cell_coord,msg:msg,cell_length:cell_length})
+
+	var topic = ''
+	if (isset(cell_coord.x) && isset(cell_coord.y))
+		topic = 'cell-'+cell_coord.x+'-'+cell_coord.y
+	else
+		topic = 'swarm-'+cell_coord
+
+
+	/*console.dir("asking api_port_from_ipfs_id")
+	console.dir({
+		cell_coord : cell_coord,
+		cell_length : cell_length
+	})*/
+
 	var api_port = api_port_from_ipfs_id(cell_coord, cell_length)
 	//console.log("publishing to "+topic+" msg: "+msg)
 /*	spawn('curl',['-X','POST',"http://127.0.0.1:"+api_port_from_ipfs_id(cell_coord,cell_length)+"/api/v0/pubsub/pub"+
@@ -66,8 +81,17 @@ pubsub.sub = function(cell, target_coord, process, cell_length, callback){
 	//console.dir(cell)
 	//console.log("Cell subscribing for "+'cell-'+cell.coord.x+'-'+cell.coord.y)
 	//console.log("subscribed to "+cell_name(cell.coord))
-	var sub = spawn('./ipfs',['pubsub','sub','cell-'+target_coord.x+'-'+target_coord.y], 
-		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(cell.coord,cell_length) , LIBP2P_FORCE_PNET:1 }});
+
+	var sub = {}
+	if (isset(target_coord.x) && isset(target_coord.y)){ 
+		sub = spawn('./ipfs',['pubsub','sub','cell-'+target_coord.x+'-'+target_coord.y], 
+		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(target_coord,cell_length) , LIBP2P_FORCE_PNET:1 }})	
+	}
+	else{ // It's a Swarm !
+		sub = spawn('./ipfs',['pubsub','sub','swarm-'+target_coord], 
+		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(target_coord,cell_length) , LIBP2P_FORCE_PNET:1 }})	
+
+	}
 	sub.stdout.on('data',process(cell,callback))
 	return sub
 }
@@ -115,6 +139,7 @@ pubsub.stop = function(cell,callback){
 }
 
 function launch_ipfs_client_node(ipfs_id, PeerID, IPv4,pubsub_router,callback){
+	console.log("ipfs client "+ipfs_id)
 	var api_port = 5001 + ipfs_id + 1 ;
 	var gateway_port = 8080 + ipfs_id + 1;
 	var swarm_port = 4001 + ipfs_id + 1 ;
@@ -213,12 +238,15 @@ function get_local_network_ipv4(){
 }
 
 function ipfs_id_from_cell_coord(coord,cell_length){
-	if (typeof(coord.router) !== 'undefined')
+	if (isset(coord.router))
 		return ""
+	else if (!isset(coord.x) && !isset(coord.y)){ // It's a Swarm !	
+		return (cell_length*cell_length + parseInt(coord) + 1)
+	}
 	else{
 	//	console.dir(coord)
 	//	console.log("id => " + (coord.x + cell_length*coord.y))
-		return (coord.x + cell_length*coord.y);
+		return (parseInt(coord.x) + cell_length*parseInt(coord.y));
 	}
 	
 }
@@ -350,14 +378,24 @@ pubsub.init_bootstrap = function(length, callback){
 	});
 }
 pubsub.init_node = function(cell_coord, length, callback){
-	/*console.log("INIT NODE")
+	console.log("INIT NODE coord:")
 	console.dir(cell_coord)
-	console.dir(length)*/
+	console.dir(length)
+	
+
 	ipfs_id = ipfs_id_from_cell_coord(cell_coord, length) //cell_coord.x + length*cell_coord.y
-	//console.dir(ipfs_id)
+	console.log("ipfs_ID :")
+	console.dir(ipfs_id)
 
 	launch_ipfs_client_node(ipfs_id, pubsub.PeerID, pubsub.IPv4, pubsub.pubsub_router, (ipfs_id)=>{
-		process.stdout.write("Initializing ipfs client node "+ipfs_id+" x:"+cell_coord.x+" y:"+cell_coord.y+" ... OK !\n");
+		var str = "";
+		if (!isset(cell_coord.x) && !isset(cell_coord.y)){
+			str = "swarm_id:"+cell_coord
+		}
+		else {
+			str = "x:"+cell_coord.x+" y:"+cell_coord.y
+		}
+		process.stdout.write("Initializing ipfs client node "+ipfs_id+" "+str+" ... OK !\n");
 		return callback();
 	})
 }
