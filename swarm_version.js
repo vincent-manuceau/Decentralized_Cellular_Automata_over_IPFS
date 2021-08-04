@@ -37,17 +37,33 @@ class Cell {
 
 function build_swarms(){
 	var cur_swarm = []
+	var maxK = 0;
 	for(var swarm_id=0 ; swarm_id < swarm_length ; swarm_id++){
 		var swarm = new Swarm(swarm_id)
 		var cells = new Array()
-		for(var i=0 ; i < cell_length ; i++)
+		curK = 0
+		for(var i=0 ; i < cell_length ; i++){
 			for(var j=0 ; j < cell_length/swarm_length ; j++){
-				var k = j + (swarm_id*cell_length)/swarm_length
+				var k = j + Math.round((swarm_id*cell_length)/swarm_length)
+				if (k <= maxK)
+					continue;
 				cells.push(new Cell({x:i,y:k}, state_from_coord(i,k), swarm))
+				//cells.push({x:i, y:k, swarm_id:swarm_id})
+				if (curK < k)
+					curK=k
 			}
+
+		}
+		if(curK > maxK){
+			maxK = curK
+		}
+			
+		//console.dir(cells)
 		swarm.cells = cells
 		cur_swarm.push(swarm)
 	}
+
+	//process.exit(0)
 	return cur_swarm
 }
 

@@ -9,9 +9,9 @@ pubsub = {PeerID : "", IPv4 : "", stats_interval : 10}
 pubsub.pubsub_router = "floodsub" // "floodsub" or "gossipsub"
 
 pubsub.pub = function(cell_coord,msg,cell_length){
-	console.log("pubsub pub ");
+/*	console.log("pubsub pub ");
 	console.dir({cell_coord:cell_coord,msg:msg,cell_length:cell_length})
-
+*/
 	var topic = ''
 	if (isset(cell_coord.x) && isset(cell_coord.y))
 		topic = 'cell-'+cell_coord.x+'-'+cell_coord.y
@@ -139,11 +139,12 @@ pubsub.stop = function(cell,callback){
 }
 
 function launch_ipfs_client_node(ipfs_id, PeerID, IPv4,pubsub_router,callback){
-	console.log("ipfs client "+ipfs_id)
+	//console.log("ipfs client "+ipfs_id)
 	var api_port = 5001 + ipfs_id + 1 ;
 	var gateway_port = 8080 + ipfs_id + 1;
 	var swarm_port = 4001 + ipfs_id + 1 ;
 
+	console.dir({ipfs_id:ipfs_id, api_port:api_port, gateway_port:gateway_port, swarm_port:swarm_port})
 
 	//process.stdout.write("Initializing ipfs client node ... ")
 	//var system_path = process.env.PATH
@@ -160,7 +161,7 @@ function launch_ipfs_client_node(ipfs_id, PeerID, IPv4,pubsub_router,callback){
 		init.stdout.on('data', function (chunk) {
 		  data += chunk
 		})
-		init.stderr.on('data', function (msg) { throw new Error(msg)})
+		init.stderr.on('data', function (msg) { console.dir({path:IPFS_PATH}); throw new Error(msg)})
 
 		init.stdout.on('end', function () {
 			//console.log("update ports")
@@ -241,7 +242,7 @@ function ipfs_id_from_cell_coord(coord,cell_length){
 	if (isset(coord.router))
 		return ""
 	else if (!isset(coord.x) && !isset(coord.y)){ // It's a Swarm !	
-		return (cell_length*cell_length + parseInt(coord) + 1)
+		return (cell_length*cell_length + parseInt(coord) + 2)
 	}
 	else{
 	//	console.dir(coord)
@@ -378,15 +379,15 @@ pubsub.init_bootstrap = function(length, callback){
 	});
 }
 pubsub.init_node = function(cell_coord, length, callback){
-	console.log("INIT NODE coord:")
-	console.dir(cell_coord)
-	console.dir(length)
+	//console.log("INIT NODE coord:")
+	
+	//console.dir(length)
 	
 
 	ipfs_id = ipfs_id_from_cell_coord(cell_coord, length) //cell_coord.x + length*cell_coord.y
-	console.log("ipfs_ID :")
-	console.dir(ipfs_id)
-
+	/*console.log("ipfs_ID :")
+	console.dir()
+*/	console.dir({init_node:true, coord:cell_coord, ipfs_id: ipfs_id})
 	launch_ipfs_client_node(ipfs_id, pubsub.PeerID, pubsub.IPv4, pubsub.pubsub_router, (ipfs_id)=>{
 		var str = "";
 		if (!isset(cell_coord.x) && !isset(cell_coord.y)){
