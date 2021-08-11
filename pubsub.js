@@ -242,7 +242,7 @@ function ipfs_id_from_cell_coord(coord,cell_length){
 	if (isset(coord.router))
 		return ""
 	else if (!isset(coord.x) && !isset(coord.y)){ // It's a Swarm !	
-		return (cell_length*cell_length + parseInt(coord) + 2)
+		return (/*cell_length*cell_length + */parseInt(coord) + 1000)
 	}
 	else{
 	//	console.dir(coord)
@@ -258,7 +258,7 @@ function api_port_from_ipfs_id(coord,cell_length){
         
 //console.dir(get_local_network_ipv4())
 
-function launch_ipfs_bootstrap_node(pubsub_router, cell_length, callback){
+function launch_ipfs_bootstrap_node(pubsub_router, cell_length, swarm_length, callback){
 	process.stdout.write("Initializing bootstrap node ... ")
 	var clean_conf = spawn('./ipfs_clean_conf.sh',["*"])
 	clean_conf.stderr.on('data', function (msg) { throw new Error(msg) })
@@ -352,11 +352,14 @@ function launch_ipfs_bootstrap_node(pubsub_router, cell_length, callback){
 							  /*ws.on('message', message => {
 							   // console.log(`Received message => ${message}`)
 							  })*/
-							  ws.send(JSON.stringify({connection:true, 
-							  							length:cell_length, 
-							  							router: pubsub.pubsub_router, 
-							  							stats_interval : pubsub.stats_interval
-							  						}))
+							  wsMsg = {
+							  	 		connection:true, 
+			  							length:cell_length, 
+			  							router: pubsub.pubsub_router, 
+			  							stats_interval : pubsub.stats_interval,
+			  							swarm_length: swarm_length
+				  						}
+							  ws.send(JSON.stringify(wsMsg))
 							})
 
 
@@ -369,8 +372,8 @@ function launch_ipfs_bootstrap_node(pubsub_router, cell_length, callback){
 }
 
 
-pubsub.init_bootstrap = function(length, callback){
-	launch_ipfs_bootstrap_node(pubsub.pubsub_router, length, (bootstrap)=>{
+pubsub.init_bootstrap = function(cell_length, swarm_length, callback){
+	launch_ipfs_bootstrap_node(pubsub.pubsub_router, cell_length, swarm_length, (bootstrap)=>{
 	process.stdout.write("OK !\n");
 	console.dir(bootstrap)
 		pubsub.PeerID = bootstrap.PeerID

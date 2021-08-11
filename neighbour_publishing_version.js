@@ -30,6 +30,6 @@ function build_cells(){
 	return cells
 }
 
-pubsub_init_bootstrap(cell_length,()=>{
+pubsub_init_bootstrap(cell_length,0,()=>{
 	cells = build_cells()
 })

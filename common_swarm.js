@@ -1,7 +1,7 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
 const swarm_length = 3
-const cell_length = 6
+const cell_length = 3
 const max_step = 1000
 
 var swarms = Array()
@@ -315,14 +315,35 @@ function cell_process(cell,swarm){
 					    client.send(JSON.stringify(msg));
 					});*/
 
-					pubsub.get_stats(cell.coord,cell_length,(stats)=>{
-					var msg = {step:cell.step,coord:cell.coord,state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
+				/*pubsub.get_stats(cell.coord,cell_length,(stats)=>{
+					var msg = {step:cell.step,coord:cell.coord,state:cell.state, in:stats.in,out:stats.out}
 				//	console.dir(msg)
 					if (cell.step % pubsub.stats_interval == 0)
 					pubsub.clients.forEach(function each(client) {
 					    client.send(JSON.stringify(msg));
 					});
-				})
+				})*/
+
+
+				if (cell.step % pubsub.stats_interval == 0){
+					var newStepSwarm = true;
+
+					for(var i in swarm.cells){
+						newStepSwarm = newStepSwarm && (cell.step == swarm.cells[i].step) ;
+					}
+					if(newStepSwarm){
+						pubsub.get_stats(swarm.swarm_id,cell_length,(stats)=>{
+							var msg = {step:cell.step,coord:swarm.swarm_id,state:false, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
+							console.dir(msg)
+							if (cell.step % pubsub.stats_interval == 0)
+							pubsub.clients.forEach(function each(client) {
+							    client.send(JSON.stringify(msg));
+							});
+						})
+					}
+				}
+
+				
 
 
 

@@ -73,7 +73,7 @@ function state_from_coord(i,j){
 	return (i == 2 && j > 0 && j < cell_length-1)?1:0
 }
 
-pubsub_init_bootstrap(cell_length,()=>{
+pubsub_init_bootstrap(cell_length,swarm_length,()=>{
 	swarms = build_swarms()
 })
 
