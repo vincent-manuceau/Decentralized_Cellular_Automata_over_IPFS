@@ -1,7 +1,7 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
-const swarm_length = 5
-const cell_length = 8
+const swarm_length = 3
+const cell_length = 6
 const max_step = 1000
 
 var swarms = Array()
@@ -78,7 +78,7 @@ function cell_msg_broadcast(cell,swarm){
 //		console.dir(cur_step)
 		var msg = [cur_nghb.swarm_id,cur_nghb.x,cur_nghb.y,
 					cell.coord.x,cell.coord.y,cell.state,cell.step,swarm.swarm_id]
-//		console.dir(msg)
+		//console.dir(msg)
 		swarm_publish(swarm, msg)
 	}
 }
@@ -178,6 +178,21 @@ function find_cell_id(cells, coord){
 	return -1
 }
 
+
+function sortArray(n){
+	return function sortFunction(a, b) {
+	    if (a[n] === b[n]) {
+	        return 0;
+	    }
+	    else {
+	        return (a[n] < b[n]) ? -1 : 1;
+	    }
+	}
+}
+
+
+
+
 function cell_process(cell,swarm){
 	return function message_processor(msg){
 	/*	console.log("cell process:")
@@ -212,6 +227,12 @@ function cell_process(cell,swarm){
 
 		}
 
+		//console.dir(msgList)
+
+		msgList.sort(sortArray(7))
+		msgList.sort(sortArray(0))
+		//console.dir(msgList)
+
 		//console.dir(msgList);
 		//process.exit(0);
 		var toBroadCast = false;
@@ -230,7 +251,7 @@ function cell_process(cell,swarm){
 				/*var neighb_id = coord_to_id(cell.neighb, target)
 				if(neighb_id >= 0)
 					cell.neighb[neighb_id].swarm_id = step*/
-				toBroadCast = true
+				toBroadCast = toBroadCast || true ;
 				//cell.step = 0
 				//continue;//return true
 				break;
@@ -286,7 +307,7 @@ function cell_process(cell,swarm){
 				var msg = {step:cell.step,coord:cell.coord,state:cell.state}
 					console.dir(msg)
 
-				toBroadCast = true
+				toBroadCast = toBroadCast || true;
 				//cell_msg_broadcast(cell,swarm)
 				//return true
 			/*	if (cell.step % pubsub.stats_interval == 0)
@@ -308,7 +329,7 @@ function cell_process(cell,swarm){
 			}
 			else if (cell.step == 0 && total == 1 
 				&& !(cell.coord.x == 0 && cell.coord.y == 0)){
-				toBroadCast = true
+				toBroadCast = toBroadCast || true;
 			}
 			//return false
 		}

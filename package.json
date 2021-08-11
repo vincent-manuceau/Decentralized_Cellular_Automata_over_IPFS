@@ -17,7 +17,8 @@
 		"start": "IPFS_PATH=./.ipfs0 ./ipfs pubsub pub cell-0-0 '[0,0,0,2]'",
 		"np": "node neighbour_publishing_version",
 		"ns": "node neighbour_subscribing_version",
-		"sw" : "node swarm_version"
+		"sw" : "node swarm_version",
+		"sw_start": "IPFS_PATH=./.ipfs0 ./ipfs pubsub pub cell-0-0 '[-1,0,0,0,0,0,0,-1]'"
 	},
 	"dependencies": {
 		"child_process": "^1.0.2",
