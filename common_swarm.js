@@ -305,7 +305,7 @@ function cell_process(cell,swarm){
 
 
 				var msg = {step:cell.step,coord:cell.coord,state:cell.state}
-					console.dir(msg)
+				//	console.dir(msg)
 
 				toBroadCast = toBroadCast || true;
 				//cell_msg_broadcast(cell,swarm)

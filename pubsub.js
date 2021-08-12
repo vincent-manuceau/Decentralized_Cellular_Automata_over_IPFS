@@ -242,12 +242,12 @@ function ipfs_id_from_cell_coord(coord,cell_length){
 	if (isset(coord.router))
 		return ""
 	else if (!isset(coord.x) && !isset(coord.y)){ // It's a Swarm !	
-		return (/*cell_length*cell_length + */parseInt(coord) + 1000)
+		return (/*cell_length*cell_length + */parseInt(coord) + 10000)
 	}
 	else{
 	//	console.dir(coord)
 	//	console.log("id => " + (coord.x + cell_length*coord.y))
-		return (parseInt(coord.x) + cell_length*parseInt(coord.y));
+		return (parseInt(coord.x) + cell_length*parseInt(coord.y) + 20000);
 	}
 	
 }
