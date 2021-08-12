@@ -294,11 +294,11 @@ function cell_process(cell,swarm){
 		/*	console.dir({
 				cell:cell.coord, alive:alive, total:total
 			})*/
-			if (total == 8){ // All neighbours received
+			if (total >= 8){ // All neighbours received
 				cell.state = ((alive == 2 && cell.state == 1) 
 								 || alive == 3)?1:0	
 				cell.step++
-				reset_neighb(cell)
+				//reset_neighb(cell)
 
 //				delete cell.alive[step-1]
 				cell.total_neighb = 0
