@@ -4,7 +4,7 @@ const {exec,spawn} = require('child_process')
 
 /* IPFS PubSub */
 
-pubsub = {PeerID : "", IPv4 : "", stats_interval : 10}
+pubsub = {PeerID : "", IPv4 : "", stats_interval : 100, total_launched:0}
 
 pubsub.pubsub_router = "floodsub" // "floodsub" or "gossipsub"
 
@@ -99,7 +99,7 @@ pubsub.sub = function(cell, target_coord, process, cell_length, callback){
 
 
 
-pubsub.get_stats = function(coord, cell_length, callback){
+pubsub.get_stats = function(coord, cell_length, step, callback){
 	var stats = spawn('./ipfs',['stats','bw'], 
 		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(coord,cell_length) , LIBP2P_FORCE_PNET:1 }});
 	var statsData = "";
@@ -122,7 +122,8 @@ pubsub.get_stats = function(coord, cell_length, callback){
 			'T':1000000000000
 		}
 
-		var res = {in : parseFloat(m[1])*unitTab[m[2]], 
+		var res = {step:step,
+			in : parseFloat(m[1])*unitTab[m[2]], 
 			out : parseFloat(m[3])*unitTab[m[4]]}
 
 		//console.dir(res)
@@ -409,15 +410,29 @@ function launch_ipfs_bootstrap_node(pubsub_router, cell_length, swarm_length, ca
 }
 
 
+pubsub.launch_swarm = function(){
+	return spawn('npm', ['run','sw_start'])
+}
+
+pubsub.launch_cells = function(){
+	return spawn('npm', ['start'])
+}
+
 pubsub.init_bootstrap = function(cell_length, swarm_length, callback){
 	launch_ipfs_bootstrap_node(pubsub.pubsub_router, cell_length, swarm_length, (bootstrap)=>{
 	process.stdout.write("OK !\n");
+	pubsub.total_launched++;
 	console.dir(bootstrap)
 		pubsub.PeerID = bootstrap.PeerID
 		pubsub.IPv4 = bootstrap.IPv4
 		return callback();
 	});
 }
+
+var events = require('events');
+pubsub.progressEmitter = new events.EventEmitter();
+
+
 pubsub.init_node = function(cell_coord, length, callback){
 	//console.log("INIT NODE coord:")
 	
@@ -437,6 +452,16 @@ pubsub.init_node = function(cell_coord, length, callback){
 			str = "x:"+cell_coord.x+" y:"+cell_coord.y
 		}
 		process.stdout.write("Initializing ipfs client node "+ipfs_id+" "+str+" ... OK !\n");
+		pubsub.total_launched++;
+		//console.log("total launched : "+pubsub.total_launched)
+		// require events module
+		//const Event = require("events");
+
+		// create a new event
+		//const event = new Event();
+
+		//event.emit("test");
+		pubsub.progressEmitter.emit('test',pubsub.total_launched)
 		return callback();
 	})
 }

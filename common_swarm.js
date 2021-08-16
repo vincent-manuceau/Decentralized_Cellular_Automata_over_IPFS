@@ -1,7 +1,7 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
-const swarm_length = 3
-const cell_length = 6
+const swarm_length = 10
+const cell_length = 10
 const max_step = 1000
 
 var swarms = Array()
@@ -9,6 +9,17 @@ var swarms = Array()
 function cell_name(x,y) {
   return "cell-"+x+"-"+y
 }
+
+pubsub.progressEmitter.on('test',function(msg){
+	var total = cell_length*cell_length + swarm_length + 1
+	console.log(msg+"/"+total)
+
+	if (msg == total){
+		console.log("LAUNCH")
+		pubsub.launch_swarm()
+	}
+})
+
 
 function neighb_list(coord, len){
 	var neighb = []
@@ -195,10 +206,10 @@ function sortArray(n){
 
 function cell_process(cell,swarm){
 	return function message_processor(msg){
-	/*	console.log("cell process:")
-		console.dir({cell_process_coord:cell.coord})
-		console.dir(msg.toString())
-*/
+//		console.log("cell process:")
+//		console.dir({cell_process_coord:cell.coord})
+//		console.dir(msg.toString())
+
 
 		if (isset(cell.stop)){
 			return true
@@ -316,8 +327,8 @@ function cell_process(cell,swarm){
 				cell.total_neighb[step] = 0
 
 
-				//var msg = {step:cell.step,coord:cell.coord,state:cell.state}
-				//	console.dir(msg)
+				var msg = {step:cell.step,coord:cell.coord,state:cell.state}
+					console.dir(msg)
 
 				toBroadCast = toBroadCast || true;
 				//cell_msg_broadcast(cell,swarm)
