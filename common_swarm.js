@@ -1,7 +1,7 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
 const swarm_length = 3
-const cell_length = 3
+const cell_length = 6
 const max_step = 1000
 
 var swarms = Array()
@@ -199,6 +199,11 @@ function cell_process(cell,swarm){
 		console.dir({cell_process_coord:cell.coord})
 		console.dir(msg.toString())
 */
+
+		if (isset(cell.stop)){
+			return true
+		}
+
 		if ((msg.toString())[0] != '[' && (msg.toString())[msg.length-1] != ']')
 			msg = '['+msg.toString()+']'
 
@@ -229,8 +234,8 @@ function cell_process(cell,swarm){
 
 		//console.dir(msgList)
 
-		msgList.sort(sortArray(7))
-		msgList.sort(sortArray(0))
+//		msgList.sort(sortArray(7))
+//		msgList.sort(sortArray(0))
 		//console.dir(msgList)
 
 		//console.dir(msgList);
@@ -288,7 +293,14 @@ function cell_process(cell,swarm){
 			cell.alive[step] += state
 			cell.total_neighb++*/
 
+			if (!isset(cell.total_neighb[step])){
+				cell.total_neighb[step] = 0
+			}
+
+			cell.total_neighb[step]++
+
 			var {alive, total} = alive_n(cell.neighb, cell.step)
+			total = cell.total_neighb[step]
 			/*var alive = cell.alive[step]
 			var total = cell.total_neighb*/
 		/*	console.dir({
@@ -301,10 +313,10 @@ function cell_process(cell,swarm){
 				//reset_neighb(cell)
 
 //				delete cell.alive[step-1]
-				cell.total_neighb = 0
+				cell.total_neighb[step] = 0
 
 
-				var msg = {step:cell.step,coord:cell.coord,state:cell.state}
+				//var msg = {step:cell.step,coord:cell.coord,state:cell.state}
 				//	console.dir(msg)
 
 				toBroadCast = toBroadCast || true;
@@ -324,18 +336,21 @@ function cell_process(cell,swarm){
 					});
 				})*/
 
+				if (cell.step >= max_step)
+					cell.stop = true
 
-				if (cell.step % pubsub.stats_interval == 0){
+				if ((cell.step % pubsub.stats_interval) == 0){
 					var newStepSwarm = true;
 
 					for(var i in swarm.cells){
-						newStepSwarm = newStepSwarm && (cell.step == swarm.cells[i].step) ;
+						if (swarm.cells[i].coord.x != cell.coord.x || swarm.cells[i].coord.y != cell.coord.y )
+						newStepSwarm = newStepSwarm && (cell.step > swarm.cells[i].step) ;
 					}
 					if(newStepSwarm){
-						pubsub.get_stats(swarm.swarm_id,cell_length,(stats)=>{
-							var msg = {step:cell.step,coord:swarm.swarm_id,state:false, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
+						pubsub.get_stats_swarm(swarm.swarm_id,cell_length,cell.step,swarm.cells.length,(stats)=>{
+							var msg = {step:stats.step,coord:stats.swarm_id,nodes:stats.nodes,in:stats.in,out:stats.out}
 							console.dir(msg)
-							if (cell.step % pubsub.stats_interval == 0)
+							if ((cell.step % pubsub.stats_interval) == 0)
 							pubsub.clients.forEach(function each(client) {
 							    client.send(JSON.stringify(msg));
 							});

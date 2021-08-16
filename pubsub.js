@@ -131,6 +131,43 @@ pubsub.get_stats = function(coord, cell_length, callback){
 }
 
 
+pubsub.get_stats_swarm = function(coord, cell_length, step, totalSwarmCells, callback){
+	var stats = spawn('./ipfs',['stats','bw'], 
+		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(coord,cell_length) , LIBP2P_FORCE_PNET:1 }});
+	var statsData = "";
+	stats.stdout.on('data',(chunk)=>{
+		statsData += chunk
+	})
+	stats.stdout.on('end',()=>{
+		const regex = /TotalIn: ([0-9]+[\.[0-9]+]?) ([kMGT]?)B\nTotalOut: ([0-9]+[[\.]?[0-9]+]?) ([kMGT]?)B/gm;
+		/*const str = `TotalIn: 77.232 kB
+		TotalOut: 76 B
+		RateIn: 46 B/s
+		RateOut: 4.5 kB/s`;*/
+		let m = regex.exec(statsData);
+		//console.dir(m)
+		var unitTab = {
+			'': 1,
+			'k':1000,
+			'M':1000000,
+			'G':1000000000,
+			'T':1000000000000
+		}
+
+		var res = {in : parseFloat(m[1])*unitTab[m[2]], 
+			out : parseFloat(m[3])*unitTab[m[4]],
+			swarm_id:coord,
+			step: step,
+			nodes : totalSwarmCells
+		}
+
+		//console.dir(res)
+		return callback(res) ;
+	})
+}
+
+
+
 pubsub.stop = function(cell,callback){
 	var stop = spawn("kill",[cell.subscribe.pid])
 	stop.stdout.on('end',()=>{

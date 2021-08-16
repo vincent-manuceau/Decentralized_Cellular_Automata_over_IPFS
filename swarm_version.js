@@ -22,6 +22,7 @@ class Cell {
     	this.coord = coord
         this.state = state
         this.step = 0
+        this.total_neighb = []
         this.swarm_id = swarm.swarm_id
         this.neighb = neighb_list(coord,cell_length)
 	    pubsub_init_node(coord, cell_length, ()=>{
@@ -41,14 +42,15 @@ function build_swarms(){
 	for(var swarm_id=0 ; swarm_id < swarm_length ; swarm_id++){
 		var swarm = new Swarm(swarm_id)
 		var cells = new Array()
+		var cellsDisplay = new Array()
 		curK = 0
 		for(var i=0 ; i < cell_length ; i++){
 			for(var j=0 ; j < cell_length/swarm_length ; j++){
 				var k = j + Math.round((swarm_id*cell_length)/swarm_length)
-				if (k <= maxK && k != 0)
+				if ((k <= maxK && k != 0) || k >= cell_length)
 					continue;
 				cells.push(new Cell({x:i,y:k}, state_from_coord(i,k), swarm))
-				//cells.push({x:i, y:k, swarm_id:swarm_id})
+				cellsDisplay.push({x:i, y:k, swarm_id:swarm_id})
 				if (curK < k)
 					curK=k
 			}
@@ -58,7 +60,8 @@ function build_swarms(){
 			maxK = curK
 		}
 			
-		//console.dir(cells)
+		console.dir(cellsDisplay)
+		delete cellsDisplay
 		swarm.cells = cells
 		cur_swarm.push(swarm)
 	}
