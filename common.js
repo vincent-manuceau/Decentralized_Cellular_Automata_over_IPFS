@@ -1,9 +1,26 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
-const cell_length = 5
-const max_step = 1000
+const cell_length = parseInt(process.argv[2])
+const max_step = 10000
 
 var cells = Array()
+var t_start = ""
+var t_stop = ""
+
+const fs = require('fs');
+fs.writeFile('stats.log', "","utf8",(err)=>{if (err) throw err})
+
+function log(m){
+	// append data to a file
+	console.dir(m);
+	fs.appendFile('stats.log', JSON.stringify(m), (err) => {
+	    if (err) {
+	        throw err;
+	    }
+	});
+}
+
+
 
 
 function cell_name(coord) {
@@ -152,6 +169,7 @@ function process_np(cell, publish_callback){
 		//console.dir("Process cell "+cell.coord.x+" "+cell.coord.y+" msg: "+msg)
 		if(is_start){ //Start CA request
 			console.log("CA start request received...")
+			t_start = new Date()
 		//	display_cells()
 			pubsub.get_stats({router:true},cell_length,0,(stats)=>{
 			//	console.dir({step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out})
@@ -186,7 +204,8 @@ function process_np(cell, publish_callback){
 				if (cell.step % pubsub.stats_interval == 0){
 					pubsub.get_stats(cell.coord,cell_length,cell.step,(stats)=>{
 						var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
-						console.dir(msg)
+						//console.dir(msg)
+						log(msg)
 						msg = {step:stats.step,coord:cell.coord,state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
 						
 						if (cell.step % pubsub.stats_interval == 0)
@@ -199,7 +218,8 @@ function process_np(cell, publish_callback){
 					//	display_cells()
 						pubsub.get_stats({router:true},cell_length,cell.step,(stats)=>{
 						var msg = {step:stats.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out}
-						console.dir(msg)
+						//console.dir(msg)
+						log(msg)
 						if (cell.step % pubsub.stats_interval == 0)
 						pubsub.clients.forEach(function each(client) {
 							    client.send(JSON.stringify(msg));
@@ -213,7 +233,9 @@ function process_np(cell, publish_callback){
 					cell.stopped = true
 					pubsub.stop(cell,()=>{
 						delete cell.subscribe
-						console.log("Cell "+cell.coord.x+" "+cell.coord.y+" : stopped !")
+						t_stop = new Date()
+						console.dir({execTime:(t_stop-t_start)/1000})
+						//console.log("Cell "+cell.coord.x+" "+cell.coord.y+" : stopped !")
 						/*var cellStopped = 0;
 						for(var i in cells){
 							if (typeof(cells[i].stopped) != 'undefined' && cells[i].stopped)
@@ -325,6 +347,7 @@ function process_cp(cell, publish_callback){
 		//console.dir("Process cell "+cell.coord.x+" "+cell.coord.y+" msg: "+msg)
 		if(is_start){ //Start CA request
 			console.log("CA start request received...")
+			t_start = new Date()
 		//	display_cells()
 			pubsub.get_stats({router:true},cell_length,cell.step,(stats)=>{
 			//	console.dir({step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out})
@@ -366,10 +389,10 @@ function process_cp(cell, publish_callback){
 				//	var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
 				//	console.dir(msg)
 					var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
-					console.dir(msg)
+					//console.dir(msg)
+					log(msg)
 					msg = {step:stats.step,coord:cell.coord,state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
 						
-
 
 					if (cell.step % pubsub.stats_interval == 0)
 					pubsub.clients.forEach(function each(client) {
@@ -382,6 +405,7 @@ function process_cp(cell, publish_callback){
 					pubsub.get_stats({router:true},cell_length,cell.step,(stats)=>{
 					var msg = {step:stats.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out}
 				//	console.dir(msg)
+					log(msg)
 					if (cell.step % pubsub.stats_interval == 0)
 					pubsub.clients.forEach(function each(client) {
 						    client.send(JSON.stringify(msg));
@@ -395,7 +419,9 @@ function process_cp(cell, publish_callback){
 					cell.stopped = true
 					pubsub.stop(cell,()=>{
 						delete cell.subscribe
-						console.log("Cell "+cell.coord.x+" "+cell.coord.y+" : stopped !")
+						t_stop = new Date()
+						console.dir({execTime:(t_stop-t_start)/1000})
+					//	console.log("Cell "+cell.coord.x+" "+cell.coord.y+" : stopped !")
 						/*var cellStopped = 0;
 						for(var i in cells){
 							if (typeof(cells[i].stopped) != 'undefined' && cells[i].stopped)

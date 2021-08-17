@@ -1,7 +1,7 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
-const swarm_length = 10
-const cell_length = 10
+const swarm_length = 3
+const cell_length = 3
 const max_step = 1000
 
 var swarms = Array()
@@ -327,8 +327,8 @@ function cell_process(cell,swarm){
 				cell.total_neighb[step] = 0
 
 
-				var msg = {step:cell.step,coord:cell.coord,state:cell.state}
-					console.dir(msg)
+				//var msg = {step:cell.step,coord:cell.coord,state:cell.state}
+				//	console.dir(msg)
 
 				toBroadCast = toBroadCast || true;
 				//cell_msg_broadcast(cell,swarm)
@@ -336,7 +336,8 @@ function cell_process(cell,swarm){
 			/*	if (cell.step % pubsub.stats_interval == 0)
 					pubsub.clients.forEach(function each(client) {
 					    client.send(JSON.stringify(msg));
-					});*/
+					});
+					*/
 
 				/*pubsub.get_stats(cell.coord,cell_length,(stats)=>{
 					var msg = {step:cell.step,coord:cell.coord,state:cell.state, in:stats.in,out:stats.out}

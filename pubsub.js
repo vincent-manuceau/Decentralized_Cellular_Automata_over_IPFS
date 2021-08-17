@@ -6,7 +6,12 @@ const {exec,spawn} = require('child_process')
 
 pubsub = {PeerID : "", IPv4 : "", stats_interval : 100, total_launched:0}
 
-pubsub.pubsub_router = "floodsub" // "floodsub" or "gossipsub"
+var routerName = []
+routerName["f"] = "floodsub"
+routerName["g"] = "gossipsub"
+
+
+pubsub.pubsub_router = routerName[process.argv[3]]//"floodsub" // "floodsub" or "gossipsub"
 
 pubsub.pub = function(cell_coord,msg,cell_length){
 /*	console.log("pubsub pub ");
@@ -98,7 +103,6 @@ pubsub.sub = function(cell, target_coord, process, cell_length, callback){
 
 
 
-
 pubsub.get_stats = function(coord, cell_length, step, callback){
 	var stats = spawn('./ipfs',['stats','bw'], 
 		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(coord,cell_length) , LIBP2P_FORCE_PNET:1 }});
@@ -107,7 +111,7 @@ pubsub.get_stats = function(coord, cell_length, step, callback){
 		statsData += chunk
 	})
 	stats.stdout.on('end',()=>{
-		const regex = /TotalIn: ([0-9]+[\.[0-9]+]?) ([kMGT]?)B\nTotalOut: ([0-9]+[[\.]?[0-9]+]?) ([kMGT]?)B/gm;
+		const regex = /TotalIn: ([0-9]*[\.[0-9]+]?) ([kMGT]?)B\nTotalOut: ([0-9]*[[\.]?[0-9]+]?) ([kMGT]?)B/gm;
 		/*const str = `TotalIn: 77.232 kB
 		TotalOut: 76 B
 		RateIn: 46 B/s
@@ -121,6 +125,8 @@ pubsub.get_stats = function(coord, cell_length, step, callback){
 			'G':1000000000,
 			'T':1000000000000
 		}
+		//console.dir(statsData)
+		//console.dir(m)
 
 		var res = {step:step,
 			in : parseFloat(m[1])*unitTab[m[2]], 
