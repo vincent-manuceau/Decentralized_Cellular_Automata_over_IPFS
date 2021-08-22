@@ -11,8 +11,15 @@ class Cell {
 	        this.state = state
 	        this.alive_neighb = 0
 	        this.current_neighb = 0
-	        this.step = 0
-	        this.subscribe = neighb_subscribe(this, cell_length, cell_publish)
+	        this.step = 0 ;
+	        //this.subscribe = neighb_subscribe(this, cell_length, cell_publish)
+
+	        (function(obj){
+			    setTimeout(function(){
+			     //   self.arr[index] = 'I am John!';
+			        obj.subscribe = neighb_subscribe(obj, cell_length, cell_publish)
+			    }, 30000);
+			})(this);
 	    })
     }
 }

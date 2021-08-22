@@ -50,6 +50,7 @@ fs.readFile('stats.log', 'utf8', function (err,str) {
 			curSum += t[i][j]
 		}
 		u.push({s: i , t:(curSum/(t[i].length*i))})
+		console.dir({i:i, tilength:t[i].length})
 	}
 
 	console.dir(u)

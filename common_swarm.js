@@ -1,10 +1,26 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
-const swarm_length = 3
-const cell_length = 3
-const max_step = 1000
+const swarm_length = parseInt(process.argv[2]) //3
+const cell_length = parseInt(process.argv[4]) //3
+const max_step = 100
 
 var swarms = Array()
+
+
+const fs = require('fs');
+fs.writeFile('stats.log', "","utf8",(err)=>{if (err) throw err})
+
+function log(m){
+	// append data to a file
+	console.dir(m);
+	fs.appendFile('stats.log', JSON.stringify(m), (err) => {
+	    if (err) {
+	        throw err;
+	    }
+	});
+}
+
+
 
 function cell_name(x,y) {
   return "cell-"+x+"-"+y
@@ -361,7 +377,7 @@ function cell_process(cell,swarm){
 					if(newStepSwarm){
 						pubsub.get_stats_swarm(swarm.swarm_id,cell_length,cell.step,swarm.cells.length,(stats)=>{
 							var msg = {step:stats.step,coord:stats.swarm_id,nodes:stats.nodes,in:stats.in,out:stats.out}
-							console.dir(msg)
+							log(msg)
 							if ((cell.step % pubsub.stats_interval) == 0)
 							pubsub.clients.forEach(function each(client) {
 							    client.send(JSON.stringify(msg));

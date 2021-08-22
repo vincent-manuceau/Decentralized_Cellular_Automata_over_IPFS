@@ -4,7 +4,7 @@ const {exec,spawn} = require('child_process')
 
 /* IPFS PubSub */
 
-pubsub = {PeerID : "", IPv4 : "", stats_interval : 1, total_launched:0}
+pubsub = {PeerID : "", IPv4 : "", stats_interval : 10, total_launched:0}
 
 var routerName = []
 routerName["f"] = "floodsub"

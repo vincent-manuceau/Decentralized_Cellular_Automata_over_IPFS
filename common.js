@@ -1,7 +1,7 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
 const cell_length = parseInt(process.argv[2])
-const max_step = 1000
+const max_step = 100
 
 var cells = Array()
 var t_start = ""
@@ -48,7 +48,17 @@ pubsub.progressEmitter.on('test',function(msg){
 
 	if (msg == total){
 		console.log("LAUNCH")
-		pubsub.launch_cells()
+		
+		
+		setTimeout(function(){
+	  //      pubsub.launch_cells()
+	    	console.log("ready ...")
+	//    	 pubsub.launch_cells()
+	    	 cell_publish(cells[0])
+	    	 t_start = new Date()
+	    }, 60000);
+		//pubsub.pub({x:0,y:0}, [0,0,0,cells[0].state], cells.length)
+		//cell_publish(cells[0])
 	}
 })
 
@@ -270,7 +280,7 @@ function process_cp(cell, publish_callback){
 			return true
 			
 		}
-		//console.dir(msg.toString());
+	//	console.dir(msg.toString());
 		const regex = /\[([0-9]+),([0-9]+),([0-9]+),([0-9]+)\]/gm;
 					  ///\[([0-9]+),([0-9]+)\]/gm;
 //		const str = `'[0,2,2,0][0,2,1,1][0,2,0,1][0,0,1,1][0,0,2,0][0,1,1,0][0,1,2,0]'`;
