@@ -1,7 +1,7 @@
 // Common functions
 const {pubsub} = require('./pubsub.js')
 const cell_length = parseInt(process.argv[2])
-const max_step = 10000
+const max_step = 1000
 
 var cells = Array()
 var t_start = ""
