@@ -1,15 +1,15 @@
 const {swarm_length, cell_length, display_cells, pubsub_init_bootstrap, 
-		pubsub_init_node_client, neighb_list, swarm_subscribe, cell_subscribe, swarm_publish_fun
+		pubsub_init_node, neighb_list, swarm_subscribe, cell_subscribe
 	  
-	  } = require('./common_swarm.js')
-var {swarms} = require('./common_swarm.js')
+	  } = require('./common_swarm_g5k.js')
+var {swarms} = require('./common_swarm_g5k.js')
 
 
 class Swarm {
 	constructor(swarm_id){	
 		this.swarm_id = swarm_id
 		this.cells = []
-		pubsub_init_node_client(swarm_id, cell_length, ()=>{
+		pubsub_init_node(swarm_id, cell_length, ()=>{
 			this.subscribe = swarm_subscribe(this)
 		})
 	}
@@ -26,7 +26,7 @@ class Cell {
         this.swarm_id = swarm.swarm_id
         this.neighb = neighb_list(coord,cell_length)
       //  this.subscribe = cell_subscribe(this,swarm)
-	    pubsub_init_node_client(coord, cell_length, ()=>{
+	    pubsub_init_node(coord, cell_length, ()=>{
 	        this.subscribe = cell_subscribe(this,swarm)	        
 	    })
     }
