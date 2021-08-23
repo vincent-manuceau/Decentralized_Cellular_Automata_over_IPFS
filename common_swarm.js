@@ -135,7 +135,7 @@ function cell_msg_broadcast(cell,swarm){
 //		console.dir(cell.swarm_id)
 //		console.dir(cur_step)
 		var msg = [cur_nghb.swarm_id,cur_nghb.x,cur_nghb.y,
-					cell.coord.x,cell.coord.y,cell.state,cell.step,swarm.swarm_id]
+					cell.coord.x,cell.coord.y,cell.state,cell.step, parseInt(process.argv[7])/*swarm.swarm_id*/]
 		//console.dir(msg)
 		swarm_publish(swarm, msg)
 	}
