@@ -4,7 +4,7 @@ console.dir(process.argv)
 
 /* IPFS PubSub */
 
-pubsub = {PeerID : process.argv[5], IPv4 : process.argv[6], stats_interval : 1, total_launched:0}
+pubsub = {SwarmID: parseInt(process.argv[7]),PeerID : process.argv[5], IPv4 : process.argv[6], stats_interval : 1, total_launched:0}
 pubsub.clients = []
 
 var routerName = []
@@ -29,7 +29,7 @@ pubsub.pub = function(cell_coord,msg,cell_length){
 
 	var currentCellCoord = {};
 	msgD = JSON.parse(msg) ;
-
+	console.dir(msgD)
 	if (msgD[msgD.length-1] != -1){
 		currentCellCoord = msgD[msgD.length-1]
 	}
@@ -46,7 +46,7 @@ pubsub.pub = function(cell_coord,msg,cell_length){
 
 
 
-	var api_port = api_port_from_ipfs_id(currentCellCoord/*cell_coord*/, cell_length)
+	var api_port = api_port_from_ipfs_id(pubsub.SwarmID /*cell_coord*/, cell_length)
 	//console.log("publishing to "+topic+" msg: "+msg)
 /*	spawn('curl',['-X','POST',"http://127.0.0.1:"+api_port_from_ipfs_id(cell_coord,cell_length)+"/api/v0/pubsub/pub"+
 	 	"?arg="+topic+"&arg="+encodeURIComponent(msg)]).unref();
