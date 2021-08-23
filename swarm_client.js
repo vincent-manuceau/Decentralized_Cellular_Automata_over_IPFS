@@ -1,5 +1,5 @@
 const {swarm_length, cell_length, display_cells, pubsub_init_bootstrap, 
-		pubsub_init_node_client, neighb_list, swarm_subscribe, cell_subscribe
+		pubsub_init_node_client, neighb_list, swarm_subscribe, cell_subscribe, swarm_publish
 	  
 	  } = require('./common_swarm.js')
 var {swarms} = require('./common_swarm.js')
@@ -27,7 +27,7 @@ class Cell {
         this.neighb = neighb_list(coord,cell_length)
       //  this.subscribe = cell_subscribe(this,swarm)
 	    pubsub_init_node_client(coord, cell_length, ()=>{
-	        this.subscribe = cell_subscribe(this,swarm)	        
+	        this.subscribe = cell_subscribe(this,swarm_publish)	        
 	    })
     }
 }
@@ -56,7 +56,6 @@ function build_swarms(){
 				if (curK < k)
 					curK=k
 			}
-
 		}
 		if(curK > maxK){
 			maxK = curK
