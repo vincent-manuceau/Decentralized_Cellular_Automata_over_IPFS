@@ -66,64 +66,32 @@ function swarm_publish(swarm,msg){
 //	console.dir(msg)
 	//msg = JSON.parse(msg)
 	//console.dir(msg)
-	console.dir({swarm_publish:true, swarm_id :swarm.swarm_id, msg: msg.toString() })
+//	console.dir({swarm_id :swarm.swarm_id, msg0: msg[0] })
 	if (swarm.swarm_id == msg[0])
 		(swarm_process(swarm))(msg)
 	else if (parseInt(msg[0]) == -1)
-		cell_publish(msg,/*swarm.swarm_id*/parseInt(process.argv[7]))
+		cell_publish(msg)
 	else
-		pubsub.pub( msg[0], JSON.stringify(msg), cell_length, parseInt(process.argv[7])/*swarm.swarm_id*/)
+		pubsub.pub( msg[0], JSON.stringify(msg), cell_length)
 }
 
-function swarm_publish_fun(swarm){
-	return function(msg){
-//	console.log("swarm publish:")
-	//console.dir(swarm)
-	
-//	console.dir(msg.toString())
-//	console.dir(msg)
-	//msg = JSON.parse(msg)
-	//console.dir(msg)
-		console.dir({swarm_publish:true, swarm_id :swarm.swarm_id, msg: msg.toString() })
-		if (swarm.swarm_id == msg[0])
-			(swarm_process(swarm))(msg)
-		else if (parseInt(msg[0]) == -1){
-			console.log("swarm_publish_fun swarm_id = ")
-			console.dir(swarm.swarm_id)
-			cell_publish(msg,parseInt(process.argv[7])/*swarm.swarm_id*/)
-
-		}
-		else
-			pubsub.pub( msg[0], JSON.stringify(msg), cell_length, swarm.swarm_id)
-	}
-}
-
-
-function cell_subscribe(cell,swarm){
+function cell_subscribe(cell, publish){
 	//console.dir(cell)
-	var sub = pubsub.sub(cell, cell.coord, cell_process, cell_length, swarm_publish_fun(swarm))
+	var sub = pubsub.sub(cell, cell.coord, cell_process, cell_length, publish)
 	return sub
 }
 
-function cell_subscribe_swarm(cell, publish, swarm){
-	//console.dir(cell)
-	var sub = pubsub.sub(cell, cell.coord, cell_process, cell_length, publish(swarm))
-	return sub
-}
-
-function cell_publish(msg,origincoord){
+function cell_publish(msg){
 /*	console.log("cell publish:")
 	console.dir(msg)*/
-	console.dir({cell_publish:true, origin: origincoord, msg: msg.toString()})
 	pubsub.pub( {x:msg[1], y:msg[2]},
 				JSON.stringify(msg),
-				cell_length, origincoord)
+				cell_length)
 }
 
 function cell_msg_broadcast(cell,swarm){
 /*	console.log("cell_msg_broadcast")
 	console.dir({ coord: cell.coord, swarm_id:swarm.swarm_id})
-
 	console.dir(cell.neighb)
 */
 	for(i in cell.neighb){
@@ -135,7 +103,7 @@ function cell_msg_broadcast(cell,swarm){
 //		console.dir(cell.swarm_id)
 //		console.dir(cur_step)
 		var msg = [cur_nghb.swarm_id,cur_nghb.x,cur_nghb.y,
-					cell.coord.x,cell.coord.y,cell.state,cell.step, parseInt(process.argv[7])/*swarm.swarm_id*/]
+					cell.coord.x,cell.coord.y,cell.state,cell.step,swarm.swarm_id]
 		//console.dir(msg)
 		swarm_publish(swarm, msg)
 	}
@@ -159,8 +127,6 @@ function swarm_process(swarm){
 	return function message_router(msg){
 /*		console.log("swarm process:")
 		console.dir(msg.toString())*/
-		console.dir({swarm_process:true, msg:msg.toString()})
-
 		if ((msg.toString())[0] != '[' && (msg.toString())[(msg.toString()).length-1] != ']')
 			msg = '['+msg.toString()+']'
 		
@@ -213,7 +179,7 @@ function swarm_process(swarm){
 			else if (msg[0] >= 0) // Sending to known swarm
 				swarm_publish(swarm, msg)
 			else
-				cell_publish(msg,/*swarm.swarm_id*/parseInt(process.argv[7]))	
+				cell_publish(msg)	
 		}
 
 		/*msg = JSON.parse(msg.toString())
@@ -256,7 +222,7 @@ function sortArray(n){
 function cell_process(cell,swarm){
 	return function message_processor(msg){
 //		console.log("cell process:")
-		console.dir({cell_process_coord:cell.coord, msg: msg.toString()})
+//		console.dir({cell_process_coord:cell.coord})
 //		console.dir(msg.toString())
 
 
@@ -363,9 +329,9 @@ function cell_process(cell,swarm){
 			total = cell.total_neighb[step]
 			/*var alive = cell.alive[step]
 			var total = cell.total_neighb*/
-		console.dir({
-				cell:cell.coord, step:cell.step, alive:alive, total:total
-			})
+		/*	console.dir({
+				cell:cell.coord, alive:alive, total:total
+			})*/
 			if (total >= 8){ // All neighbours received
 				cell.state = ((alive == 2 && cell.state == 1) 
 								 || alive == 3)?1:0	
@@ -484,7 +450,6 @@ function reset_neighb(cell){
 				JSON.stringify([cell.step,cell.coord.x,cell.coord.y,cell.state]),
 				cell_length)
 }
-
 function neighb_publish(cell){
 	//console.log("publishing "+cell.coord.x+" "+cell.coord.y)
 	//console.dir(cell.neighb)
@@ -495,13 +460,11 @@ function neighb_publish(cell){
 					cell_length)
 	}
 }
-
 function cell_subscribe(cell, publish){
 	//console.dir(cell)
 	var sub = pubsub.sub(cell, cell.coord, process_np, cell_length, publish)
 	return sub
 }
-
 function neighb_subscribe(cell,length, publish){
 	var neighb = neighb_list(cell.coord, length)
 	var sub = Array(8)
@@ -526,8 +489,6 @@ exports.cell_length = cell_length
 exports.display_cells = display_cells
 exports.pubsub_init_bootstrap = pubsub.init_bootstrap
 exports.pubsub_init_node = pubsub.init_node	
-exports.pubsub_init_node_client = pubsub.init_node_client	
 exports.neighb_list = neighb_list	
 exports.swarm_subscribe = swarm_subscribe	
-exports.swarm_publish_fun = swarm_publish_fun
 exports.cell_subscribe = cell_subscribe	

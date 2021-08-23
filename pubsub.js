@@ -4,16 +4,16 @@ const {exec,spawn} = require('child_process')
 
 /* IPFS PubSub */
 
-pubsub = {PeerID : "", IPv4 : "", stats_interval : 1, total_launched:0}
+pubsub = {PeerID : "", IPv4 : "", stats_interval : 10, total_launched:0}
 
 var routerName = []
 routerName["f"] = "floodsub"
 routerName["g"] = "gossipsub"
 
-pubsub.clients = []; 
+
 pubsub.pubsub_router = routerName[process.argv[3]]//"floodsub" // "floodsub" or "gossipsub"
 
-pubsub.pub = function(cell_coord,msg,cell_length,origin){
+pubsub.pub = function(cell_coord,msg,cell_length){
 /*	console.log("pubsub pub ");
 	console.dir({cell_coord:cell_coord,msg:msg,cell_length:cell_length})
 */
@@ -30,7 +30,7 @@ pubsub.pub = function(cell_coord,msg,cell_length,origin){
 		cell_length : cell_length
 	})*/
 
-	var api_port = api_port_from_ipfs_id(origin/*cell_coord*/, cell_length)
+	var api_port = api_port_from_ipfs_id(cell_coord, cell_length)
 	//console.log("publishing to "+topic+" msg: "+msg)
 /*	spawn('curl',['-X','POST',"http://127.0.0.1:"+api_port_from_ipfs_id(cell_coord,cell_length)+"/api/v0/pubsub/pub"+
 	 	"?arg="+topic+"&arg="+encodeURIComponent(msg)]).unref();
@@ -53,11 +53,10 @@ pubsub.pub = function(cell_coord,msg,cell_length,origin){
 	    'Content-Length': data.length
 	  }
 	}
-
 */
 	const options = {
 	  hostname: '127.0.0.1',
-	  port: api_port_from_ipfs_id(origin,cell_length),
+	  port: api_port_from_ipfs_id(cell_coord,cell_length),
 	  path: //'/api/v0/pubsub/pub',
 	  "/api/v0/pubsub/pub?arg="+topic+"&arg="+encodeURIComponent(msg),
 	  method: 'POST',
@@ -72,9 +71,6 @@ pubsub.pub = function(cell_coord,msg,cell_length,origin){
 //	console.log(`statusCode: ${res.statusCode}`)
 
 	})
-
-	console.dir(options)
-
 
 	req.on('error', error => {
 		console.error(error)
@@ -271,9 +267,7 @@ function launch_ipfs_client_node(ipfs_id, PeerID, IPv4,pubsub_router,callback){
 
 /*
 var os = require('os');
-
 var networkInterfaces = os.networkInterfaces();
-
 console.log(networkInterfaces);*/
 
 function get_local_network_ipv4(){
@@ -477,69 +471,20 @@ pubsub.init_node = function(cell_coord, length, callback){
 
 
 
-
-
-
-pubsub.init_node_client = function(cell_coord, length, callback){
-	//console.log("INIT NODE coord:")
-	
-	//console.dir(length)
-	//console.dir(process.argv)
-	var PeerID = (process.argv[5])
-	var IPv4 = (process.argv[6])
-
-	//console.dir({PeerID:PeerID, IPv4:IPv4})
-
-
-	ipfs_id = ipfs_id_from_cell_coord(cell_coord, length) //cell_coord.x + length*cell_coord.y
-	/*console.log("ipfs_ID :")
-	console.dir()
-*/	console.dir({init_node:true, coord:cell_coord, ipfs_id: ipfs_id})
-	launch_ipfs_client_node(ipfs_id, PeerID, IPv4, pubsub.pubsub_router, (ipfs_id)=>{
-		var str = "";
-		if (!isset(cell_coord.x) && !isset(cell_coord.y)){
-			str = "swarm_id:"+cell_coord
-		}
-		else {
-			str = "x:"+cell_coord.x+" y:"+cell_coord.y
-		}
-		process.stdout.write("Initializing ipfs client node "+ipfs_id+" "+str+" ... OK !\n");
-		pubsub.total_launched++;
-		//console.log("total launched : "+pubsub.total_launched)
-		// require events module
-		//const Event = require("events");
-
-		// create a new event
-		//const event = new Event();
-
-		//event.emit("test");
-		pubsub.progressEmitter.emit('test',pubsub.total_launched)
-		return callback();
-	})
-}
-
-
-
-
-
-
 /*
 launch_ipfs(0,(msg)=>{
 	console.log("IPFS IS FULLY LAUNCHED "+msg)
-
 })*/
 /*
 launch_ipfs_bootstrap_node((bootstrap)=>{
 	process.stdout.write("OK !\n");
 	console.dir(bootstrap)
 	
-
 	for(var i=0; i < 10 ; i++){
 		launch_ipfs_client_node(i, bootstrap.PeerID, bootstrap.IPv4,(msg)=>{
 		process.stdout.write("OK !\n");
 		console.log("IPFS node "+i+" "+msg)
 	})
-
 	}
 });
 */
