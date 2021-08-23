@@ -72,7 +72,7 @@ function swarm_publish(swarm,msg){
 	else if (parseInt(msg[0]) == -1)
 		cell_publish(msg,/*swarm.swarm_id*/parseInt(process.argv[7]))
 	else
-		pubsub.pub( msg[0], JSON.stringify(msg), cell_length, swarm.swarm_id)
+		pubsub.pub( msg[0], JSON.stringify(msg), cell_length, parseInt(process.argv[7])/*swarm.swarm_id*/)
 }
 
 function swarm_publish_fun(swarm){
