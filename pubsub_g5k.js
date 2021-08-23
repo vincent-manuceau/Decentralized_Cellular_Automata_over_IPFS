@@ -27,16 +27,16 @@ pubsub.pub = function(cell_coord,msg,cell_length){
 		topic = 'swarm-'+cell_coord
 	}
 
-	var currentCellCoord = {};
+	/*var currentCellCoord = {};
 	msgD = JSON.parse(msg) ;
-	console.dir(msgD)
+//	console.dir(msgD)
 	if (msgD[msgD.length-1] != -1){
 		currentCellCoord = msgD[msgD.length-1]
 	}
 	else{
 		currentCellCoord = { x: msgD[3] , y: msgD[4] }
 	}
-
+*/
 
 	/*console.dir("asking api_port_from_ipfs_id")
 	console.dir({

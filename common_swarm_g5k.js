@@ -49,8 +49,8 @@ function neighb_list(coord, len){
 				neighb.push({x:mu,y:nu, swarm_id:-1, state:[]})
 			}
 		}
-	console.dir({neigh_for_cell : coord})
-	console.dir (neighb)
+//	console.dir({neigh_for_cell : coord})
+//	console.dir (neighb)
 	return neighb
 }
 
@@ -113,8 +113,8 @@ function cell_msg_broadcast(cell,swarm){
 //		console.dir(cur_step)
 		var msg = [cur_nghb.swarm_id,cur_nghb.x,cur_nghb.y,
 					cell.coord.x,cell.coord.y,cell.state,cell.step,swarm.swarm_id]
-		console.dir({msg_broadcast:cell.coord, msg: msg.toString()})
-		console.dir(msg)
+	//	console.dir({msg_broadcast:cell.coord, msg: msg.toString()})
+	//	console.dir(msg)
 		swarm_publish(swarm, msg)
 	}
 }
@@ -135,9 +135,9 @@ function not_in(t, x){
 
 function swarm_process(swarm){
 	return function message_router(msg){
-		console.log("swarm process:")
-		console.dir(msg.toString())
-		console.dir(msg)
+	//	console.log("swarm process:")
+	//	console.dir(msg.toString())
+	//	console.dir(msg)
 
 
 
@@ -168,7 +168,7 @@ function swarm_process(swarm){
 			//console.dir(msgList)
 
 		}
-		console.dir({msgList:true, list : msgList})
+	//	console.dir({msgList:true, list : msgList})
 		//console.dir(msgList);
 		//process.exit(0);
 
@@ -238,7 +238,7 @@ function cell_process(cell,swarm){
 //		console.log("cell process:")
 //		console.dir({cell_process_coord:cell.coord})
 //		console.dir(msg.toString())
-		console.dir({cell_process:true, cell:cell.coord, msg: msg.toString()})
+	//	console.dir({cell_process:true, cell:cell.coord, msg: msg.toString()})
 
 		if (isset(cell.stop)){
 			return true
@@ -354,10 +354,10 @@ function cell_process(cell,swarm){
 				cell:cell.coord, alive:alive, total:total
 			})*/
 
-			console.dir({
+		/*	console.dir({
 				cell: cell.coord, totalN:cell.total_neighbour, total: total, alive: alive
 			})
-
+*/
 
 
 			if (cell.total_neighbour >= 8){ //total >= 8){ // All neighbours received
@@ -371,7 +371,7 @@ function cell_process(cell,swarm){
 				cell.total_neighbour = 0
 
 				var msg = {step:cell.step,coord:cell.coord,state:cell.state}
-					console.dir(msg)
+				//	console.dir(msg)
 
 				toBroadCast = toBroadCast || true;
 				//cell_msg_broadcast(cell,swarm)
