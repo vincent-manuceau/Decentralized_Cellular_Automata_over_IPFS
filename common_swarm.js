@@ -70,14 +70,44 @@ function swarm_publish(swarm,msg){
 	if (swarm.swarm_id == msg[0])
 		(swarm_process(swarm))(msg)
 	else if (parseInt(msg[0]) == -1)
-		cell_publish(msg,swarm.swarm_id)
+		cell_publish(msg,/*swarm.swarm_id*/parseInt(process.argv[7]))
 	else
 		pubsub.pub( msg[0], JSON.stringify(msg), cell_length, swarm.swarm_id)
 }
 
-function cell_subscribe(cell, publish){
+function swarm_publish_fun(swarm){
+	return function(msg){
+//	console.log("swarm publish:")
+	//console.dir(swarm)
+	
+//	console.dir(msg.toString())
+//	console.dir(msg)
+	//msg = JSON.parse(msg)
+	//console.dir(msg)
+		console.dir({swarm_publish:true, swarm_id :swarm.swarm_id, msg: msg.toString() })
+		if (swarm.swarm_id == msg[0])
+			(swarm_process(swarm))(msg)
+		else if (parseInt(msg[0]) == -1){
+			console.log("swarm_publish_fun swarm_id = ")
+			console.dir(swarm.swarm_id)
+			cell_publish(msg,parseInt(process.argv[7])/*swarm.swarm_id*/)
+
+		}
+		else
+			pubsub.pub( msg[0], JSON.stringify(msg), cell_length, swarm.swarm_id)
+	}
+}
+
+
+function cell_subscribe(cell,swarm){
 	//console.dir(cell)
-	var sub = pubsub.sub(cell, cell.coord, cell_process, cell_length, publish)
+	var sub = pubsub.sub(cell, cell.coord, cell_process, cell_length, swarm_publish_fun(swarm))
+	return sub
+}
+
+function cell_subscribe_swarm(cell, publish, swarm){
+	//console.dir(cell)
+	var sub = pubsub.sub(cell, cell.coord, cell_process, cell_length, publish(swarm))
 	return sub
 }
 
@@ -183,7 +213,7 @@ function swarm_process(swarm){
 			else if (msg[0] >= 0) // Sending to known swarm
 				swarm_publish(swarm, msg)
 			else
-				cell_publish(msg,swarm.swarm_id)	
+				cell_publish(msg,/*swarm.swarm_id*/parseInt(process.argv[7]))	
 		}
 
 		/*msg = JSON.parse(msg.toString())
@@ -499,4 +529,5 @@ exports.pubsub_init_node = pubsub.init_node
 exports.pubsub_init_node_client = pubsub.init_node_client	
 exports.neighb_list = neighb_list	
 exports.swarm_subscribe = swarm_subscribe	
+exports.swarm_publish_fun = swarm_publish_fun
 exports.cell_subscribe = cell_subscribe	
