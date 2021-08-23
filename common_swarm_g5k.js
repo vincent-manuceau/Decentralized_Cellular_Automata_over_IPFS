@@ -346,7 +346,7 @@ function cell_process(cell,swarm){
 
 
 
-			if (cell.total_neighbour >= 4){ //total >= 8){ // All neighbours received
+			if (cell.total_neighbour >= 8){ //total >= 8){ // All neighbours received
 				cell.state = ((alive == 2 && cell.state == 1) 
 								 || alive == 3)?1:0	
 				cell.step++
