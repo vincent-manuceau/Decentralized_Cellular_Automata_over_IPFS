@@ -66,7 +66,7 @@ function swarm_publish(swarm,msg){
 //	console.dir(msg)
 	//msg = JSON.parse(msg)
 	//console.dir(msg)
-//	console.dir({swarm_id :swarm.swarm_id, msg0: msg[0] })
+	console.dir({swarm_publish:true, swarm_id :swarm.swarm_id, msg: msg.toString() })
 	if (swarm.swarm_id == msg[0])
 		(swarm_process(swarm))(msg)
 	else if (parseInt(msg[0]) == -1)
@@ -84,6 +84,7 @@ function cell_subscribe(cell, publish){
 function cell_publish(msg,origincoord){
 /*	console.log("cell publish:")
 	console.dir(msg)*/
+	console.dir({cell_publish:true, origin: origincoord, msg: msg.toString()})
 	pubsub.pub( {x:msg[1], y:msg[2]},
 				JSON.stringify(msg),
 				cell_length, origincoord)
