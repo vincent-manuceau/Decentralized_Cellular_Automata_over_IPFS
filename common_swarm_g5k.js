@@ -342,8 +342,8 @@ function cell_process(cell,swarm){
 				cell.total_neighb[step] = 0
 
 
-				//var msg = {step:cell.step,coord:cell.coord,state:cell.state}
-				//	console.dir(msg)
+				var msg = {step:cell.step,coord:cell.coord,state:cell.state}
+					console.dir(msg)
 
 				toBroadCast = toBroadCast || true;
 				//cell_msg_broadcast(cell,swarm)
