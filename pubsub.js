@@ -90,6 +90,8 @@ pubsub.sub = function(cell, target_coord, process, cell_length, callback, swarm_
 	//console.log("Cell subscribing for "+'cell-'+cell.coord.x+'-'+cell.coord.y)
 	//console.log("subscribed to "+cell_name(cell.coord))
 
+	console.dir({sub:true, target:target_coord, swarm_id:swarm_id})
+
 	var sub = {}
 	if (isset(target_coord.x) && isset(target_coord.y)){ 
 		sub = spawn('./ipfs',['pubsub','sub','cell-'+target_coord.x+'-'+target_coord.y], 
