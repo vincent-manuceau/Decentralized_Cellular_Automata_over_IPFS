@@ -47,7 +47,7 @@ function build_swarms(){
 		var cellsDisplay = new Array()
 		curK = 0
 		for(var i=0 ; i < cell_length ; i++){
-			for(var j=0 ; j < cell_length/swarm_length ; j++){
+			for(var j=0 ; j < Math.floor(cell_length/swarm_length) ; j++){
 				var k = j + Math.round((swarm_id*cell_length)/swarm_length)
 				if ((k <= maxK && k != 0) || k >= cell_length)
 					continue;

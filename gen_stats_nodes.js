@@ -59,6 +59,7 @@ fs.readFile('stats.log', 'utf8', function (err,str) {
 		curSum += u[i].t
 	}
 
+	console.dir(u[u.length-1])
 	console.dir(curSum/u.length)
 
 });
