@@ -493,6 +493,7 @@ exports.cell_length = cell_length
 exports.display_cells = display_cells
 exports.pubsub_init_bootstrap = pubsub.init_bootstrap
 exports.pubsub_init_node = pubsub.init_node	
+exports.pubsub_init_node_client = pubsub.init_node_client	
 exports.neighb_list = neighb_list	
 exports.swarm_subscribe = swarm_subscribe	
 exports.cell_subscribe = cell_subscribe	

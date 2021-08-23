@@ -474,6 +474,49 @@ pubsub.init_node = function(cell_coord, length, callback){
 
 
 
+
+
+
+pubsub.init_node_client = function(cell_coord, length, callback){
+	//console.log("INIT NODE coord:")
+	
+	//console.dir(length)
+	
+	var PeerID = parseInt(process.argv[5])
+	var IPv4 = parseInt(process.argv[6])
+
+	ipfs_id = ipfs_id_from_cell_coord(cell_coord, length) //cell_coord.x + length*cell_coord.y
+	/*console.log("ipfs_ID :")
+	console.dir()
+*/	console.dir({init_node:true, coord:cell_coord, ipfs_id: ipfs_id})
+	launch_ipfs_client_node(ipfs_id, PeerID, IPv4, pubsub.pubsub_router, (ipfs_id)=>{
+		var str = "";
+		if (!isset(cell_coord.x) && !isset(cell_coord.y)){
+			str = "swarm_id:"+cell_coord
+		}
+		else {
+			str = "x:"+cell_coord.x+" y:"+cell_coord.y
+		}
+		process.stdout.write("Initializing ipfs client node "+ipfs_id+" "+str+" ... OK !\n");
+		pubsub.total_launched++;
+		//console.log("total launched : "+pubsub.total_launched)
+		// require events module
+		//const Event = require("events");
+
+		// create a new event
+		//const event = new Event();
+
+		//event.emit("test");
+		pubsub.progressEmitter.emit('test',pubsub.total_launched)
+		return callback();
+	})
+}
+
+
+
+
+
+
 /*
 launch_ipfs(0,(msg)=>{
 	console.log("IPFS IS FULLY LAUNCHED "+msg)
