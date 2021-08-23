@@ -77,7 +77,7 @@ function swarm_publish(swarm,msg){
 
 function cell_subscribe(cell, publish){
 	//console.dir(cell)
-	var sub = pubsub.sub(cell, cell.coord, cell_process, cell_length, publish)
+	var sub = pubsub.sub(cell, cell.coord, cell_process, cell_length, publish, cell.swarm_id)
 	return sub
 }
 
