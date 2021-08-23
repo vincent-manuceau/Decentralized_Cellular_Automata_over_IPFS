@@ -333,7 +333,7 @@ function cell_process(cell,swarm){
 			cell.total_neighbour++;
 
 			var {alive, total} = alive_n(cell.neighb, cell.step)
-		//	total = cell.total_neighb[step]
+			total = cell.total_neighb[step]
 			/*var alive = cell.alive[step]
 			var total = cell.total_neighb*/
 		/*	console.dir({
