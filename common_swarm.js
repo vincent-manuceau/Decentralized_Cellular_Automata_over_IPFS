@@ -70,9 +70,9 @@ function swarm_publish(swarm,msg){
 	if (swarm.swarm_id == msg[0])
 		(swarm_process(swarm))(msg)
 	else if (parseInt(msg[0]) == -1)
-		cell_publish(msg)
+		cell_publish(msg,swarm.swarm_id)
 	else
-		pubsub.pub( msg[0], JSON.stringify(msg), cell_length)
+		pubsub.pub( msg[0], JSON.stringify(msg), cell_length, swarm.swarm_id)
 }
 
 function cell_subscribe(cell, publish){
@@ -81,12 +81,12 @@ function cell_subscribe(cell, publish){
 	return sub
 }
 
-function cell_publish(msg){
+function cell_publish(msg,origincoord){
 /*	console.log("cell publish:")
 	console.dir(msg)*/
 	pubsub.pub( {x:msg[1], y:msg[2]},
 				JSON.stringify(msg),
-				cell_length)
+				cell_length, origincoord)
 }
 
 function cell_msg_broadcast(cell,swarm){
@@ -180,7 +180,7 @@ function swarm_process(swarm){
 			else if (msg[0] >= 0) // Sending to known swarm
 				swarm_publish(swarm, msg)
 			else
-				cell_publish(msg)	
+				cell_publish(msg,swarm.swarm_id)	
 		}
 
 		/*msg = JSON.parse(msg.toString())

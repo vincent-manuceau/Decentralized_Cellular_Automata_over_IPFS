@@ -13,7 +13,7 @@ routerName["g"] = "gossipsub"
 
 pubsub.pubsub_router = routerName[process.argv[3]]//"floodsub" // "floodsub" or "gossipsub"
 
-pubsub.pub = function(cell_coord,msg,cell_length){
+pubsub.pub = function(cell_coord,msg,cell_length,origin){
 /*	console.log("pubsub pub ");
 	console.dir({cell_coord:cell_coord,msg:msg,cell_length:cell_length})
 */
@@ -30,7 +30,7 @@ pubsub.pub = function(cell_coord,msg,cell_length){
 		cell_length : cell_length
 	})*/
 
-	var api_port = api_port_from_ipfs_id(cell_coord, cell_length)
+	var api_port = api_port_from_ipfs_id(origin/*cell_coord*/, cell_length)
 	//console.log("publishing to "+topic+" msg: "+msg)
 /*	spawn('curl',['-X','POST',"http://127.0.0.1:"+api_port_from_ipfs_id(cell_coord,cell_length)+"/api/v0/pubsub/pub"+
 	 	"?arg="+topic+"&arg="+encodeURIComponent(msg)]).unref();
@@ -57,7 +57,7 @@ pubsub.pub = function(cell_coord,msg,cell_length){
 */
 	const options = {
 	  hostname: '127.0.0.1',
-	  port: api_port_from_ipfs_id(cell_coord,cell_length),
+	  port: api_port_from_ipfs_id(origin,cell_length),
 	  path: //'/api/v0/pubsub/pub',
 	  "/api/v0/pubsub/pub?arg="+topic+"&arg="+encodeURIComponent(msg),
 	  method: 'POST',
