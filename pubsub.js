@@ -10,7 +10,7 @@ var routerName = []
 routerName["f"] = "floodsub"
 routerName["g"] = "gossipsub"
 
-
+pubsub.clients = []; 
 pubsub.pubsub_router = routerName[process.argv[3]]//"floodsub" // "floodsub" or "gossipsub"
 
 pubsub.pub = function(cell_coord,msg,cell_length,origin){
