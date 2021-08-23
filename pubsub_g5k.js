@@ -19,10 +19,23 @@ pubsub.pub = function(cell_coord,msg,cell_length){
 	console.dir({cell_coord:cell_coord,msg:msg,cell_length:cell_length})
 */
 	var topic = ''
-	if (isset(cell_coord.x) && isset(cell_coord.y))
+	
+	if (isset(cell_coord.x) && isset(cell_coord.y)){
 		topic = 'cell-'+cell_coord.x+'-'+cell_coord.y
-	else
+	}
+	else{
 		topic = 'swarm-'+cell_coord
+	}
+
+	var currentCellCoord = {};
+	msgD = JSON.parse(msg) ;
+
+	if (msgD[msgD.length-1] != -1){
+		currentCellCoord = msgD[msgD.length-1]
+	}
+	else{
+		currentCellCoord = { x: msgD[3] , y: msgD[4] }
+	}
 
 
 	/*console.dir("asking api_port_from_ipfs_id")
@@ -31,7 +44,9 @@ pubsub.pub = function(cell_coord,msg,cell_length){
 		cell_length : cell_length
 	})*/
 
-	var api_port = api_port_from_ipfs_id(cell_coord, cell_length)
+
+
+	var api_port = api_port_from_ipfs_id(currentCellCoord/*cell_coord*/, cell_length)
 	//console.log("publishing to "+topic+" msg: "+msg)
 /*	spawn('curl',['-X','POST',"http://127.0.0.1:"+api_port_from_ipfs_id(cell_coord,cell_length)+"/api/v0/pubsub/pub"+
 	 	"?arg="+topic+"&arg="+encodeURIComponent(msg)]).unref();
@@ -57,7 +72,7 @@ pubsub.pub = function(cell_coord,msg,cell_length){
 */
 	const options = {
 	  hostname: '127.0.0.1',
-	  port: api_port_from_ipfs_id(cell_coord,cell_length),
+	  port: api_port,//api_port_from_ipfs_id(cell_coord,cell_length),
 	  path: //'/api/v0/pubsub/pub',
 	  "/api/v0/pubsub/pub?arg="+topic+"&arg="+encodeURIComponent(msg),
 	  method: 'POST',
