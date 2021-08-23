@@ -330,9 +330,9 @@ function cell_process(cell,swarm){
 			total = cell.total_neighb[step]
 			/*var alive = cell.alive[step]
 			var total = cell.total_neighb*/
-		/*	console.dir({
+		console.dir({
 				cell:cell.coord, alive:alive, total:total
-			})*/
+			})
 			if (total >= 8){ // All neighbours received
 				cell.state = ((alive == 2 && cell.state == 1) 
 								 || alive == 3)?1:0	
