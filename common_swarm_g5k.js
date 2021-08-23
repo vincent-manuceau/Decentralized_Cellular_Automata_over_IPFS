@@ -49,6 +49,8 @@ function neighb_list(coord, len){
 				neighb.push({x:mu,y:nu, swarm_id:-1, state:[]})
 			}
 		}
+	console.dir({neigh_for_cell : coord})
+	console.dir (neighb)
 	return neighb
 }
 
@@ -58,6 +60,8 @@ function swarm_subscribe(swarm, publish){
 	var sub = pubsub.sub(swarm, swarm.swarm_id, swarm_process, cell_length, publish)
 	return sub
 }
+
+
 function swarm_publish(swarm,msg){
 //	console.log("swarm publish:")
 	//console.dir(swarm)
@@ -67,8 +71,13 @@ function swarm_publish(swarm,msg){
 	//msg = JSON.parse(msg)
 	//console.dir(msg)
 //	console.dir({swarm_id :swarm.swarm_id, msg0: msg[0] })
+	var cell_id = find_cell_id(swarm.cells, {x:msg[1], y:msg[2]})
+
 	if (swarm.swarm_id == msg[0])
 		(swarm_process(swarm))(msg)
+	else if (cell_id > -1){
+		(cell_process(swarm.cells[cell_id], swarm))(msg) ;
+	}
 	else if (parseInt(msg[0]) == -1)
 		cell_publish(msg)
 	else
@@ -104,7 +113,8 @@ function cell_msg_broadcast(cell,swarm){
 //		console.dir(cur_step)
 		var msg = [cur_nghb.swarm_id,cur_nghb.x,cur_nghb.y,
 					cell.coord.x,cell.coord.y,cell.state,cell.step,swarm.swarm_id]
-		//console.dir(msg)
+		console.dir({msg_broadcast:cell.coord, msg: msg.toString()})
+		console.dir(msg)
 		swarm_publish(swarm, msg)
 	}
 }
@@ -125,8 +135,12 @@ function not_in(t, x){
 
 function swarm_process(swarm){
 	return function message_router(msg){
-/*		console.log("swarm process:")
-		console.dir(msg.toString())*/
+		console.log("swarm process:")
+		console.dir(msg.toString())
+		console.dir(msg)
+
+
+
 		if ((msg.toString())[0] != '[' && (msg.toString())[(msg.toString()).length-1] != ']')
 			msg = '['+msg.toString()+']'
 		
@@ -154,7 +168,7 @@ function swarm_process(swarm){
 			//console.dir(msgList)
 
 		}
-
+		console.dir({msgList:true, list : msgList})
 		//console.dir(msgList);
 		//process.exit(0);
 
