@@ -2,7 +2,7 @@
 const {pubsub} = require('./pubsub_g5k.js')
 const swarm_length = parseInt(process.argv[2]) //3
 const cell_length = parseInt(process.argv[4]) //3
-const max_step = 100
+const max_step = 1000
 
 var swarms = Array()
 
