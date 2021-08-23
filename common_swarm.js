@@ -129,6 +129,8 @@ function swarm_process(swarm){
 	return function message_router(msg){
 /*		console.log("swarm process:")
 		console.dir(msg.toString())*/
+		console.dir({swarm_process:true, msg:msg.toString()})
+
 		if ((msg.toString())[0] != '[' && (msg.toString())[(msg.toString()).length-1] != ']')
 			msg = '['+msg.toString()+']'
 		
