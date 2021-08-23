@@ -481,9 +481,12 @@ pubsub.init_node_client = function(cell_coord, length, callback){
 	//console.log("INIT NODE coord:")
 	
 	//console.dir(length)
-	
-	var PeerID = parseInt(process.argv[5])
-	var IPv4 = parseInt(process.argv[6])
+	//console.dir(process.argv)
+	var PeerID = (process.argv[5])
+	var IPv4 = (process.argv[6])
+
+	//console.dir({PeerID:PeerID, IPv4:IPv4})
+
 
 	ipfs_id = ipfs_id_from_cell_coord(cell_coord, length) //cell_coord.x + length*cell_coord.y
 	/*console.log("ipfs_ID :")
