@@ -85,21 +85,19 @@ pubsub.pub = function(cell_coord,msg,cell_length,origin){
 
 }
 
-pubsub.sub = function(cell, target_coord, process, cell_length, callback, swarm_id){
+pubsub.sub = function(cell, target_coord, process, cell_length, callback){
 	//console.dir(cell)
 	//console.log("Cell subscribing for "+'cell-'+cell.coord.x+'-'+cell.coord.y)
 	//console.log("subscribed to "+cell_name(cell.coord))
 
-	console.dir({sub:true, target:target_coord, swarm_id:swarm_id})
-
 	var sub = {}
 	if (isset(target_coord.x) && isset(target_coord.y)){ 
 		sub = spawn('./ipfs',['pubsub','sub','cell-'+target_coord.x+'-'+target_coord.y], 
-		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(swarm_id,cell_length) , LIBP2P_FORCE_PNET:1 }})	
+		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(target_coord,cell_length) , LIBP2P_FORCE_PNET:1 }})	
 	}
 	else{ // It's a Swarm !
 		sub = spawn('./ipfs',['pubsub','sub','swarm-'+target_coord], 
-		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(swarm_id,cell_length) , LIBP2P_FORCE_PNET:1 }})	
+		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(target_coord,cell_length) , LIBP2P_FORCE_PNET:1 }})	
 
 	}
 	sub.stdout.on('data',process(cell,callback))
@@ -288,7 +286,6 @@ function get_local_network_ipv4(){
 }
 
 function ipfs_id_from_cell_coord(coord,cell_length){
-	console.dir({coord:coord})
 	if (isset(coord.router))
 		return ""
 	else if (!isset(coord.x) && !isset(coord.y)){ // It's a Swarm !	

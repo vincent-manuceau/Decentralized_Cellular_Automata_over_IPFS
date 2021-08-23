@@ -25,10 +25,10 @@ class Cell {
         this.total_neighb = []
         this.swarm_id = swarm.swarm_id
         this.neighb = neighb_list(coord,cell_length)
-        this.subscribe = cell_subscribe(this,swarm)
-/*	    pubsub_init_node_client(coord, cell_length, ()=>{
+      //  this.subscribe = cell_subscribe(this,swarm)
+	    pubsub_init_node_client(coord, cell_length, ()=>{
 	        this.subscribe = cell_subscribe(this,swarm)	        
-	    })*/
+	    })
     }
 }
 

@@ -55,7 +55,7 @@ function neighb_list(coord, len){
 /* Swarm PubSub */
 function swarm_subscribe(swarm, publish){
 	//console.dir(cell)
-	var sub = pubsub.sub(swarm, swarm.swarm_id, swarm_process, cell_length, publish,swarm.swarm_id)
+	var sub = pubsub.sub(swarm, swarm.swarm_id, swarm_process, cell_length, publish)
 	return sub
 }
 function swarm_publish(swarm,msg){
@@ -77,7 +77,7 @@ function swarm_publish(swarm,msg){
 
 function cell_subscribe(cell, publish){
 	//console.dir(cell)
-	var sub = pubsub.sub(cell, cell.coord, cell_process, cell_length, publish, cell.swarm_id)
+	var sub = pubsub.sub(cell, cell.coord, cell_process, cell_length, publish)
 	return sub
 }
 
