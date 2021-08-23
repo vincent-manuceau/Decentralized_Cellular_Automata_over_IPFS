@@ -317,7 +317,8 @@ function api_port_from_ipfs_id(coord,cell_length){
 
 function launch_ipfs_bootstrap_node(pubsub_router, cell_length, swarm_length, callback){
 	process.stdout.write("Initializing bootstrap node ... ")
-	var clean_conf = spawn('./ipfs_clean_conf.sh',["*"])
+	const IPFS_PATH = './.ipfs'
+	/*var clean_conf = spawn('./ipfs_clean_conf.sh',["*"])
 	clean_conf.stderr.on('data', function (msg) { throw new Error(msg) })
 	clean_conf.stdout.on('end', function () {
 		//echo -e "/key/swarm/psk/1.0.0/\n/base16/\n`tr -dc 'a-f0-9' < /dev/urandom | head -c64`" > ~/.ipfs/swarm.key
@@ -336,7 +337,7 @@ function launch_ipfs_bootstrap_node(pubsub_router, cell_length, swarm_length, ca
 			var gen_key = spawn('./generate_swarm_key.sh',[pubsub_router])
 			gen_key.stderr.on('data', function (msg) { throw new Error(msg) })
 			gen_key.stdout.on('end', function () {
-
+			*/	
 				var rm_bootstrap = spawn('./ipfs', ['bootstrap','rm','--all'], {
 		 			env: {IPFS_PATH: IPFS_PATH, LIBP2P_FORCE_PNET:1}})
 
@@ -370,7 +371,7 @@ function launch_ipfs_bootstrap_node(pubsub_router, cell_length, swarm_length, ca
 				 			env: {IPFS_PATH: IPFS_PATH, LIBP2P_FORCE_PNET:1}})
 						add_bootstrap.stderr.on('data', function (msg) { throw new Error(msg) })
 						add_bootstrap.stdout.on('end', function () {	
-
+							
 
 						  	var ipfs = spawn('./ipfs', ['christ','--enable-pubsub-experiment'], {
 							  env: {IPFS_PATH: IPFS_PATH, LIBP2P_FORCE_PNET:1}})
@@ -403,7 +404,7 @@ function launch_ipfs_bootstrap_node(pubsub_router, cell_length, swarm_length, ca
  
 							const wss = new WebSocket.Server({ port: 8079 })
 							pubsub.clients = [];
-
+						//	console.dir(pubsub)
 							wss.on('connection', ws => {
 								pubsub.clients.push(ws)
 							  /*ws.on('message', message => {
@@ -423,9 +424,12 @@ function launch_ipfs_bootstrap_node(pubsub_router, cell_length, swarm_length, ca
 						})
 					})
 				})
+
+
+			/*	
 			})
 		})
-	})
+	})*/
 }
 
 
