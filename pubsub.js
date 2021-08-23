@@ -93,11 +93,11 @@ pubsub.sub = function(cell, target_coord, process, cell_length, callback, swarm_
 	var sub = {}
 	if (isset(target_coord.x) && isset(target_coord.y)){ 
 		sub = spawn('./ipfs',['pubsub','sub','cell-'+target_coord.x+'-'+target_coord.y], 
-		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(swarm_id/*target_coord*/,cell_length) , LIBP2P_FORCE_PNET:1 }})	
+		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(cell.coord/*target_coord*/,cell_length) , LIBP2P_FORCE_PNET:1 }})	
 	}
 	else{ // It's a Swarm !
 		sub = spawn('./ipfs',['pubsub','sub','swarm-'+target_coord], 
-		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(swarm_id/*target_coord*/,cell_length) , LIBP2P_FORCE_PNET:1 }})	
+		{env: { IPFS_PATH: './.ipfs'+ipfs_id_from_cell_coord(cell.coord/*target_coord*/,cell_length) , LIBP2P_FORCE_PNET:1 }})	
 
 	}
 	sub.stdout.on('data',process(cell,callback))
