@@ -41,30 +41,36 @@ function build_swarms(){
 	var cur_swarm = []
 	var maxK = 0;
 	//for(var swarm_id=0 ; swarm_id < swarm_length ; swarm_id++){
-		var swarm_id = parseInt(process.argv[7])
-		var swarm = new Swarm(swarm_id)
-		var cells = new Array()
-		var cellsDisplay = new Array()
-		curK = 0
-		for(var i=0 ; i < cell_length ; i++){
-			for(var j=0 ; j < Math.floor(cell_length/swarm_length) ; j++){
-				var k = j + Math.round((swarm_id*cell_length)/swarm_length)
-				if ((k <= maxK && k != 0) || k >= cell_length)
-					continue;
-				cells.push(new Cell({x:i,y:k}, state_from_coord(i,k), swarm))
-				cellsDisplay.push({x:i, y:k, swarm_id:swarm_id})
-				if (curK < k)
-					curK=k
-			}
+	var swarm_id = parseInt(process.argv[7])
+	var swarm = new Swarm(swarm_id)
+	var cells = new Array()
+	var cellsDisplay = new Array()
+	//curK = 0
+	for(var i=0 ; i < cell_length ; i++){
+		for(var j=Math.floor(swarm_id*cell_length/swarm_length) ; 
+			j < Math.floor((swarm_id+1)*cell_length/swarm_length) ; j++)
+//		for(var j=0 ; j < (cell_length/swarm_length) ; j++)
+		{
+/*			var k = j + Math.round((swarm_id*cell_length)/swarm_length)
+			if ((k <= maxK && k != 0) || k >= cell_length || (k == cell_length-1 && swarm_id < swarm_length-1))
+				continue;*/
+			var k = j;
+			cells.push(new Cell({x:i,y:k}, state_from_coord(i,k), swarm))
+			cellsDisplay.push({x:i, y:k, swarm_id:swarm_id})
+		/*	if (curK < k)
+				curK=k*/
 		}
-		if(curK > maxK){
-			maxK = curK
-		}
-			
-		console.dir(cellsDisplay)
-		delete cellsDisplay
-		swarm.cells = cells
-		cur_swarm.push(swarm)
+	}
+/*	if(curK > maxK){
+		maxK = curK
+	}*/
+		
+	console.dir(cellsDisplay)
+	delete cellsDisplay
+	
+	//process.exit(0)
+	swarm.cells = cells
+	cur_swarm.push(swarm)
 	//}
 
 	//process.exit(0)
