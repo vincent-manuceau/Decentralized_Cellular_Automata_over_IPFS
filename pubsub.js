@@ -73,6 +73,9 @@ pubsub.pub = function(cell_coord,msg,cell_length,origin){
 
 	})
 
+	console.dir(options)
+
+
 	req.on('error', error => {
 		console.error(error)
 		throw new Error(error)

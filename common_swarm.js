@@ -223,7 +223,7 @@ function sortArray(n){
 function cell_process(cell,swarm){
 	return function message_processor(msg){
 //		console.log("cell process:")
-//		console.dir({cell_process_coord:cell.coord})
+		console.dir({cell_process_coord:cell.coord, msg: msg.toString()})
 //		console.dir(msg.toString())
 
 
