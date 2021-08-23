@@ -224,7 +224,7 @@ function cell_process(cell,swarm){
 //		console.log("cell process:")
 //		console.dir({cell_process_coord:cell.coord})
 //		console.dir(msg.toString())
-
+		console.dir({cell_process:true, cell:cell.coord, msg: msg.toString()})
 
 		if (isset(cell.stop)){
 			return true
@@ -325,14 +325,28 @@ function cell_process(cell,swarm){
 
 			cell.total_neighb[step]++
 
+			if (!isset(cell.total_neighbour)){
+				cell.total_neighbour = 0
+			}
+
+
+			cell.total_neighbour++;
+
 			var {alive, total} = alive_n(cell.neighb, cell.step)
-			total = cell.total_neighb[step]
+		//	total = cell.total_neighb[step]
 			/*var alive = cell.alive[step]
 			var total = cell.total_neighb*/
 		/*	console.dir({
 				cell:cell.coord, alive:alive, total:total
 			})*/
-			if (total >= 8){ // All neighbours received
+
+			console.dir({
+				cell: cell.coord, totalN:cell.total_neighbour, total: total, alive: alive
+			})
+
+
+
+			if (cell.total_neighbour >= 8){ //total >= 8){ // All neighbours received
 				cell.state = ((alive == 2 && cell.state == 1) 
 								 || alive == 3)?1:0	
 				cell.step++
@@ -340,7 +354,7 @@ function cell_process(cell,swarm){
 
 //				delete cell.alive[step-1]
 				cell.total_neighb[step] = 0
-
+				cell.total_neighbour = 0
 
 				var msg = {step:cell.step,coord:cell.coord,state:cell.state}
 					console.dir(msg)
@@ -396,6 +410,13 @@ function cell_process(cell,swarm){
 			}
 			//return false
 		}
+
+		if (!isset(cell.start)){
+			cell.start = true;
+			toBroadCast = true;
+		}
+
+
 		if (toBroadCast)
 			cell_msg_broadcast(cell, swarm)
 	}
