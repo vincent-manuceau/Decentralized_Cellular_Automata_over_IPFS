@@ -112,7 +112,7 @@ function cell_msg_broadcast(cell,swarm){
 }
 
 function not_in(t, x){
-	return true
+	//return true
 	for(i in t){
 		var cur_test = true
 		for(j in x){
