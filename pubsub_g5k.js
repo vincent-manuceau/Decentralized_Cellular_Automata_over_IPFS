@@ -4,7 +4,7 @@ console.dir(process.argv)
 
 /* IPFS PubSub */
 
-pubsub = {SwarmID: parseInt(process.argv[7]),PeerID : process.argv[5], IPv4 : process.argv[6], stats_interval : 1, total_launched:0}
+pubsub = {SwarmID: parseInt(process.argv[7]),PeerID : process.argv[5], IPv4 : process.argv[6], stats_interval : 100, total_launched:0}
 pubsub.clients = []
 
 var routerName = []
