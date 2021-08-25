@@ -350,10 +350,10 @@ function cell_process(cell,swarm){
 			total = cell.total_neighb[step]
 			/*var alive = cell.alive[step]
 			var total = cell.total_neighb*/
-		/*	console.dir({
+/*			console.dir({
 				cell:cell.coord, alive:alive, total:total
-			})*/
-
+			})
+*/
 		/*	console.dir({
 				cell: cell.coord, totalN:cell.total_neighbour, total: total, alive: alive
 			})
@@ -391,8 +391,12 @@ function cell_process(cell,swarm){
 					});
 				})*/
 
-				if (cell.step >= max_step)
+				if (cell.step >= max_step){
 					cell.stop = true
+					pubsub.stop(cell,function(){
+						console.dir({cell:cell.coord, stop:true})
+					})
+				}
 
 				if ((cell.step % pubsub.stats_interval) == 0){
 					var newStepSwarm = true;
@@ -402,15 +406,20 @@ function cell_process(cell,swarm){
 						newStepSwarm = newStepSwarm && (cell.step > swarm.cells[i].step) ;
 					}
 					if(newStepSwarm){
-						pubsub.get_stats_swarm(swarm.swarm_id,cell_length,cell.step,swarm.cells.length,(stats)=>{
+						console.dir({step:cell.step, swarm: swarm.swarm_id});
+						/*pubsub.get_stats_swarm(swarm.swarm_id,cell_length,cell.step,swarm.cells.length,(stats)=>{
 							var msg = {step:stats.step,coord:stats.swarm_id,nodes:stats.nodes,in:stats.in,out:stats.out}
 							log(msg)
 							if ((cell.step % pubsub.stats_interval) == 0)
 							pubsub.clients.forEach(function each(client) {
 							    client.send(JSON.stringify(msg));
 							});
-						})
+						})*/
 					}
+				}
+				else if (cell.step > max_step){
+					console.dir({step:cell.step, swarm: swarm.swarm_id});
+					//cell.stop = true
 				}
 
 				
@@ -422,6 +431,7 @@ function cell_process(cell,swarm){
 				&& !(cell.coord.x == 0 && cell.coord.y == 0)){
 				toBroadCast = toBroadCast || true;
 			}
+//			console.dir({debug:true,step:cell.step,coord:cell.coord,state:cell.state})
 			//return false
 		}
 

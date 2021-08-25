@@ -16,7 +16,7 @@
   },
   "AutoNAT": {},
   "Bootstrap": [
-    "/ip4/172.16.39.2/tcp/4001/ipfs/12D3KooWNweUU2sz77HDUPS7iB8Hv1zFaoV5WRxRmqnnuUyaV5A9"
+    "/ip4/172.16.39.1/tcp/4001/ipfs/12D3KooWNweUU2sz77HDUPS7iB8Hv1zFaoV5WRxRmqnnuUyaV5A9"
   ],
   "Datastore": {
     "BloomFilterSize": 0,

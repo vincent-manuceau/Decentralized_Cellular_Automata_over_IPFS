@@ -15,9 +15,9 @@ routerName["g"] = "gossipsub"
 pubsub.pubsub_router = routerName[process.argv[3]]//"floodsub" // "floodsub" or "gossipsub"
 
 pubsub.pub = function(cell_coord,msg,cell_length){
-/*	console.log("pubsub pub ");
-	console.dir({cell_coord:cell_coord,msg:msg,cell_length:cell_length})
-*/
+//	console.log("pubsub pub ");
+//	console.dir({cell_coord:cell_coord,msg:msg,cell_length:cell_length})
+
 	var topic = ''
 	
 	if (isset(cell_coord.x) && isset(cell_coord.y)){
