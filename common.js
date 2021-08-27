@@ -225,7 +225,7 @@ function process_np(cell, publish_callback){
 						    client.send(JSON.stringify(msg));
 						});
 					})*/
-					var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state};
+					var msg = {step:cell.step,coord:coord_to_str(cell.coord),state:cell.state};
 					console.log(msg)
 
 					if(cell.coord.x == 0 && cell.coord.y == 0){
@@ -239,7 +239,7 @@ function process_np(cell, publish_callback){
 							    client.send(JSON.stringify(msg));
 							});
 						})*/
-						var msg = {step:stats.step, router: pubsub.pubsub_router};
+						var msg = {step:cell.step, router: pubsub.pubsub_router};
 						console.dir(msg)
 					}	
 				}
@@ -416,12 +416,12 @@ function process_cp(cell, publish_callback){
 					    client.send(JSON.stringify(msg));
 					});
 				})*/
-				var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state};
+				var msg = {step:cell.step,coord:coord_to_str(cell.coord),state:cell.state};
 				console.dir(msg)
 				
 				if(cell.coord.x == 0 && cell.coord.y == 0){
 				//	display_cells()
-					var msg = {step:stats.step, router: pubsub.pubsub_router};
+					var msg = {step:cell.step, router: pubsub.pubsub_router};
 					console.dir(msg)
 					/*pubsub.get_stats({router:true},cell_length,cell.step,(stats)=>{
 					var msg = {step:stats.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out}
