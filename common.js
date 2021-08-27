@@ -181,10 +181,12 @@ function process_np(cell, publish_callback){
 			console.log("CA start request received...")
 			t_start = new Date()
 		//	display_cells()
-			pubsub.get_stats({router:true},cell_length,0,(stats)=>{
+			return publish_callback(cell)
+
+			/*pubsub.get_stats({router:true},cell_length,0,(stats)=>{
 			//	console.dir({step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out})
 				return publish_callback(cell)
-			})			
+			})		*/	
 		}
 		else{
 			//console.dir(cell.msg)
@@ -212,21 +214,23 @@ function process_np(cell, publish_callback){
 			//	console.dir(cell.msg)
 
 				if (cell.step % pubsub.stats_interval == 0){
-					pubsub.get_stats(cell.coord,cell_length,cell.step,(stats)=>{
-						var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
+					/*pubsub.get_stats(cell.coord,cell_length,cell.step,(stats)=>{
+						var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state, in:stats.in,out:stats.out}
 						//console.dir(msg)
 						log(msg)
-						msg = {step:stats.step,coord:cell.coord,state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
+						msg = {step:stats.step,coord:cell.coord,state:cell.state,in:stats.in,out:stats.out}
 						
 						if (cell.step % pubsub.stats_interval == 0)
 						pubsub.clients.forEach(function each(client) {
 						    client.send(JSON.stringify(msg));
 						});
-					})
-				
+					})*/
+					var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state};
+					console.log(msg)
+
 					if(cell.coord.x == 0 && cell.coord.y == 0){
 					//	display_cells()
-						pubsub.get_stats({router:true},cell_length,cell.step,(stats)=>{
+						/*pubsub.get_stats({router:true},cell_length,cell.step,(stats)=>{
 						var msg = {step:stats.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out}
 						//console.dir(msg)
 						log(msg)
@@ -234,7 +238,9 @@ function process_np(cell, publish_callback){
 						pubsub.clients.forEach(function each(client) {
 							    client.send(JSON.stringify(msg));
 							});
-						})
+						})*/
+						var msg = {step:stats.step, router: pubsub.pubsub_router};
+						console.dir(msg)
 					}	
 				}
 
@@ -359,10 +365,11 @@ function process_cp(cell, publish_callback){
 			console.log("CA start request received...")
 			t_start = new Date()
 		//	display_cells()
-			pubsub.get_stats({router:true},cell_length,cell.step,(stats)=>{
+			/*pubsub.get_stats({router:true},cell_length,cell.step,(stats)=>{
 			//	console.dir({step:cell.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out})
 				return publish_callback(cell)
-			})			
+			})		*/
+			return publish_callback(cell)	
 		}
 		else{
 			//console.dir(cell.msg)
@@ -395,24 +402,28 @@ function process_cp(cell, publish_callback){
 
 			if (cell.step % pubsub.stats_interval == 0){
 
-				pubsub.get_stats(cell.coord,cell_length,cell.step,(stats)=>{
-				//	var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
+				/*pubsub.get_stats(cell.coord,cell_length,cell.step,(stats)=>{
+				//	var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state, in:stats.in,out:stats.out}
 				//	console.dir(msg)
-					var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
+					var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state, in:stats.in,out:stats.out}
 					//console.dir(msg)
 					log(msg)
-					msg = {step:stats.step,coord:cell.coord,state:cell.state, /*alive:cell.alive_neighb,current:cell.current_neighb, */in:stats.in,out:stats.out}
+					msg = {step:stats.step,coord:cell.coord,state:cell.state, in:stats.in,out:stats.out}
 						
 
 					if (cell.step % pubsub.stats_interval == 0)
 					pubsub.clients.forEach(function each(client) {
 					    client.send(JSON.stringify(msg));
 					});
-				})
+				})*/
+				var msg = {step:stats.step,coord:coord_to_str(cell.coord),state:cell.state};
+				console.dir(msg)
 				
 				if(cell.coord.x == 0 && cell.coord.y == 0){
 				//	display_cells()
-					pubsub.get_stats({router:true},cell_length,cell.step,(stats)=>{
+					var msg = {step:stats.step, router: pubsub.pubsub_router};
+					console.dir(msg)
+					/*pubsub.get_stats({router:true},cell_length,cell.step,(stats)=>{
 					var msg = {step:stats.step, router: pubsub.pubsub_router, in:stats.in,out:stats.out}
 				//	console.dir(msg)
 					log(msg)
@@ -420,7 +431,7 @@ function process_cp(cell, publish_callback){
 					pubsub.clients.forEach(function each(client) {
 						    client.send(JSON.stringify(msg));
 						});
-					})
+					})*/
 				}
 
 				}
