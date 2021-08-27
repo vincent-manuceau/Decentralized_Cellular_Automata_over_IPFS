@@ -196,13 +196,13 @@ function process_np(cell, publish_callback){
 			}
 			cell.current_neighb = cell.msg[cell.step].length;
 
-			if (cell.current_neighb > 8){
+			/*if (cell.current_neighb > 8){
 				delete cell.subscribe
 				console.dir(cell)
 				throw new Error(JSON.stringify(cell))
-			}
+			}*/
 
-			if(cell.current_neighb == 8){
+			if(cell.current_neighb >= 8){
 			//	console.log("8 neighbours !");
 				cell.state = ((cell.alive_neighb == 2 && cell.state == 1) 
 							 || cell.alive_neighb == 3)?1:0
@@ -378,13 +378,13 @@ function process_cp(cell, publish_callback){
 				}
 			//cell.current_neighb = cell.msg[cell.step].length;
 
-			if (cell.current_neighb > 8){
+			/*if (cell.current_neighb > 8){
 				delete cell.subscribe
 				console.dir(cell)
 				throw new Error(JSON.stringify(cell))
-			}
+			}*/
 
-			if(cell.current_neighb == 8){
+			if(cell.current_neighb >= 8){
 			//	console.log("8 neighbours !");
 				cell.state = ((cell.alive_neighb == 2 && cell.state == 1) 
 							 || cell.alive_neighb == 3)?1:0

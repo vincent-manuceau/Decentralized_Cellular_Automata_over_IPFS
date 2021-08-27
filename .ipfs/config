@@ -16,7 +16,7 @@
   },
   "AutoNAT": {},
   "Bootstrap": [
-    "/ip4/172.16.39.1/tcp/4001/ipfs/12D3KooWNweUU2sz77HDUPS7iB8Hv1zFaoV5WRxRmqnnuUyaV5A9"
+    "/ip4/172.16.39.2/tcp/4001/ipfs/12D3KooWJhYSNVVoi5TfNEke5eUMdyhHMTUFYzTTTop9EQhsXDMT"
   ],
   "Datastore": {
     "BloomFilterSize": 0,
@@ -89,8 +89,8 @@
     "Writable": false
   },
   "Identity": {
-    "PeerID": "12D3KooWNweUU2sz77HDUPS7iB8Hv1zFaoV5WRxRmqnnuUyaV5A9",
-    "PrivKey": "CAESQHkpXUL2CILycQQbfbh+3iqQNA8+OKf3oB/9KWakaFFIwwVutcEfOBadG3UBQjstGXjpB69acaJhUgHM7zJlBtI="
+    "PeerID": "12D3KooWJhYSNVVoi5TfNEke5eUMdyhHMTUFYzTTTop9EQhsXDMT",
+    "PrivKey": "CAESQPbtB2tTzWXYnhNPvqV/dGIkySy9Tk+2uyO9Fy0jcMB9g/m6dXEsxfKP3uoDQlO7FUyXgKUtoQSGWb5ThTOWz2I="
   },
   "Ipns": {
     "RecordLifetime": "",
